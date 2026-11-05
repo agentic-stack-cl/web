@@ -57,6 +57,7 @@ Valida con `npm run radar:validate`. El esquema está en [.claude/rules/radar.md
 ## Mejorar el sitio
 
 - Busca issues con la etiqueta [`good first issue`](https://github.com/agentic-stack-cl/web/labels/good%20first%20issue) o mira el [tablero](https://github.com/orgs/agentic-stack-cl/projects/1).
+- Toma solo issues con el label [`ready`](https://github.com/agentic-stack-cl/web/labels/ready): cumplen la [Definition of Ready](docs/ISSUES.md) y tienen toda la información para desarrollarlos. Para crear uno nuevo usa la plantilla **Tarea de desarrollo**.
 - Rama `feat/<tema>` o `fix/<tema>`.
 - Usa los tokens de color del brand (`brand-*`, `accent-*`), revisa modo claro y oscuro, móvil y contraste AA.
 

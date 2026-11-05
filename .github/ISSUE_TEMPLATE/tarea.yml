@@ -1,0 +1,87 @@
+name: Tarea de desarrollo
+description: Funcionalidad, mejora o cambio técnico con la información mínima para desarrollarlo (Definition of Ready)
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Esta plantilla sigue la **Definition of Ready** del repo ([docs/ISSUES.md](https://github.com/agentic-stack-cl/web/blob/main/docs/ISSUES.md)).
+        Un issue con todas las secciones completas puede recibir el label `ready` y desarrollarlo una persona o un agente sin preguntar nada más.
+        ¿Es solo una idea? Escribe lo que sepas y agrega el label `idea`: se completa después.
+  - type: textarea
+    id: contexto
+    attributes:
+      label: Contexto
+      description: ¿Qué problema hay hoy y a quién afecta? ¿Por qué vale la pena?
+    validations:
+      required: true
+  - type: textarea
+    id: objetivo
+    attributes:
+      label: Objetivo
+      description: Qué cambia cuando esté hecho, en una o dos frases, desde el punto de vista de quien usa el sitio o el repo.
+    validations:
+      required: true
+  - type: textarea
+    id: alcance
+    attributes:
+      label: Alcance
+      description: Lista de lo que incluye.
+      value: |
+        -
+    validations:
+      required: true
+  - type: textarea
+    id: fuera
+    attributes:
+      label: Fuera de alcance
+      description: Lo que NO se hace en este issue (evita que crezca). Si no aplica, escribe "Nada en particular".
+      value: |
+        -
+    validations:
+      required: true
+  - type: textarea
+    id: criterios
+    attributes:
+      label: Criterios de aceptación
+      description: Casillas verificables, una por resultado observable. Incluye casos borde y lo que no debe romperse.
+      value: |
+        - [ ]
+        - [ ] `npm run check` y `npm run build` pasan
+    validations:
+      required: true
+  - type: textarea
+    id: verificar
+    attributes:
+      label: Cómo verificar
+      description: Comandos, páginas a abrir y pasos manuales para comprobar los criterios.
+    validations:
+      required: true
+  - type: textarea
+    id: pistas
+    attributes:
+      label: Pistas técnicas
+      description: Archivos, componentes o scripts relevantes, patrones a seguir, librerías sugeridas o descartadas.
+    validations:
+      required: true
+  - type: textarea
+    id: dependencias
+    attributes:
+      label: Dependencias
+      description: Issues, PRs, secrets o decisiones de los que depende (con #número). Si no hay, escribe "Ninguna".
+    validations:
+      required: true
+  - type: textarea
+    id: decisiones
+    attributes:
+      label: Decisiones abiertas
+      description: Preguntas sin resolver. Con alguna pendiente, el issue NO está ready. Marca las resueltas con `- [x]` y la respuesta.
+      value: |
+        Ninguna
+  - type: checkboxes
+    id: dor
+    attributes:
+      label: Checklist de Definition of Ready
+      options:
+        - label: Cabe en un solo PR (si no, divídelo en varios issues)
+        - label: Tiene un label de área (web, radar, post, infra, agentic)

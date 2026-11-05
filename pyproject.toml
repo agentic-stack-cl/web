@@ -1,4 +1,4 @@
-# Configuración de herramientas Python para scripts/radar (sin dependencias de runtime).
+# Configuración de herramientas Python para scripts/ (sin dependencias de runtime).
 [project]
 name = "agentic-stack-radar"
 version = "0.1.0"
@@ -12,5 +12,5 @@ target-version = "py311"
 select = ["E", "F", "W", "I", "UP", "B", "SIM"]
 
 [tool.pytest.ini_options]
-testpaths = ["scripts/radar/tests"]
-pythonpath = ["scripts/radar"]
+testpaths = ["scripts/radar/tests", "scripts/issues/tests"]
+pythonpath = ["scripts/radar", "scripts/issues"]

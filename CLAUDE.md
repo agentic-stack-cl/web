@@ -46,10 +46,17 @@ Antes de dar por terminado un cambio: `npm run check && npm run build`. Si tocas
 - Accesibilidad no negociable: contraste AA en ambos modos, `alt` en imágenes, jerarquía de headings, foco visible.
 - No inventes datos de la comunidad (miembros, fechas de eventos, enlaces de Discord). Si falta el dato, deja un `TODO` visible en el PR.
 
+## Issues y Definition of Ready
+
+- Solo se implementan issues con el label `ready`, que cumplen `docs/ISSUES.md` (8 secciones, sin decisiones abiertas, label de área, cabe en un PR).
+- Antes de escribir código para un issue: `python3 scripts/issues/check_ready.py --issue <n>`. Si falla o no tiene `ready`, **no implementes**: explica qué falta y ofrece `/issue-ready <n>`. El hook `UserPromptSubmit` te avisa cuando un prompt menciona un issue incompleto.
+- Para desarrollar un issue `ready` usa `/implement-issue <n>`. Issues nuevos de desarrollo: plantilla "Tarea de desarrollo".
+- Nunca pongas `ready` ni edites un issue sin confirmación humana.
+
 ## Agentes y skills del repo
 
 - Subagentes en `.claude/agents/`: `content-editor`, `radar-curator`, `web-reviewer`, `release-checker`. Úsalos de forma proactiva según su descripción.
-- Skills en `.claude/skills/`: `/new-post`, `/radar-blip`, `/weekly-digest`.
+- Skills en `.claude/skills/`: `/new-post`, `/radar-blip`, `/weekly-digest`, `/issue-ready`, `/implement-issue`.
 - Guía para personas: `docs/AGENTIC.md` (no la importes: es para humanos).
 
 ## Límites

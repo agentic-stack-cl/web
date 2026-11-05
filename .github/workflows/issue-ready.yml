@@ -1,0 +1,56 @@
+name: Issue ready
+
+# Garantiza que el label `ready` signifique siempre lo mismo: el issue cumple la
+# Definition of Ready (docs/ISSUES.md). Si se pone el label (o se edita un issue que lo
+# tiene) y falta información, se quita el label y se comenta qué falta.
+
+on:
+  issues:
+    types: [labeled, edited]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: issue-ready-${{ github.event.issue.number }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    if: >-
+      (github.event.action == 'labeled' && github.event.label.name == 'ready') ||
+      (github.event.action == 'edited' && contains(github.event.issue.labels.*.name, 'ready'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: scripts/issues
+
+      - name: Validar Definition of Ready
+        id: dor
+        run: |
+          set +e
+          python3 scripts/issues/check_ready.py --event "$GITHUB_EVENT_PATH" > "$RUNNER_TEMP/report.md"
+          echo "exit=$?" >> "$GITHUB_OUTPUT"
+          cat "$RUNNER_TEMP/report.md" | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Quitar `ready` y explicar qué falta
+        if: steps.dor.outputs.exit == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ github.event.issue.number }}
+        run: |
+          {
+            echo "Quité el label \`ready\` porque el issue todavía no cumple la [Definition of Ready](https://github.com/${GITHUB_REPOSITORY}/blob/main/docs/ISSUES.md):"
+            echo
+            sed '1d' "$RUNNER_TEMP/report.md"
+            echo
+            echo "Complétalo (con Claude Code: \`/issue-ready ${NUMBER}\`) y vuelve a poner el label."
+          } > "$RUNNER_TEMP/comment.md"
+          gh issue edit "$NUMBER" -R "$GITHUB_REPOSITORY" --remove-label ready
+          gh issue comment "$NUMBER" -R "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/comment.md"
+
+      - name: Error del validador
+        if: steps.dor.outputs.exit == '2'
+        run: exit 1

@@ -38,14 +38,17 @@ Claude los usa solo cuando corresponde, pero puedes pedirlos explícitamente: _"
 
 ## Skills (comandos)
 
-| Comando                  | Para qué                                                                                          |
-| ------------------------ | ------------------------------------------------------------------------------------------------- |
-| `/new-post <título>`     | Crea rama, ficha de autor si falta y el archivo del post con front-matter válido y `draft: true`. |
-| `/radar-blip <nombre>`   | Agrega o mueve un blip con justificación, valida y prepara el texto del PR.                       |
-| `/weekly-digest [desde]` | Redacta el resumen de cambios del radar para Discord (no lo publica). Solo se invoca a mano.      |
+| Comando                  | Para qué                                                                                                                                                                 |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `/new-post <título>`     | Crea rama, ficha de autor si falta y el archivo del post con front-matter válido y `draft: true`.                                                                        |
+| `/radar-blip <nombre>`   | Agrega o mueve un blip con justificación, valida y prepara el texto del PR.                                                                                              |
+| `/weekly-digest [desde]` | Redacta el resumen de cambios del radar para Discord (no lo publica). Solo se invoca a mano.                                                                             |
+| `/issue-ready <n>`       | Revisa un issue contra la Definition of Ready, completa lo que falta investigando el repo y, con tu OK, actualiza el issue y le pone `ready`.                            |
+| `/implement-issue <n>`   | Desarrolla un issue `ready` de principio a fin: rama, plan desde los criterios, implementación, verificación y PR con `Closes #n`. Se detiene si el issue no está ready. |
 
 ## Hooks: dos capas
 
+- **Hook `UserPromptSubmit`** (`issue-ready.sh`): si tu mensaje menciona un issue (`#42`, "issue 42" o su URL) que no cumple la [Definition of Ready](ISSUES.md), Claude recibe qué falta y tú ves un aviso. No bloquea; la regla en `CLAUDE.md` le dice que no implemente y ofrezca `/issue-ready`.
 - **Hooks de Claude Code** (`.claude/settings.json` → `PostToolUse` en `Edit|Write`):
   - `format.sh` formatea el archivo recién editado (Prettier o Ruff). Nunca bloquea.
   - `validate-radar.sh` valida `radar.json` si cambió; si falla sale con código 2 y Claude ve el error y lo corrige.
@@ -86,6 +89,8 @@ Evaluados y **no** incluidos por ahora:
 **Escribir un post**: `/new-post <título>` → escribes (con o sin ayuda) → _"revisa con content-editor"_ → `draft: false` → `release-checker` → PR con la plantilla "Post nuevo".
 
 **Proponer un blip**: abre un hilo en el foro de Discord (lo ideal) o usa `/radar-blip <nombre>` → `radar-curator` → PR con la plantilla "Blip nuevo". El anillo definitivo lo decide la votación del foro (ver `/radar/como-funciona`).
+
+**Desarrollar un issue**: el issue debe tener el label `ready` ([docs/ISSUES.md](ISSUES.md)). Si no, `/issue-ready <n>` → revisas y confirmas → `ready`. Luego `/implement-issue <n>` → PR. En GitHub, el workflow `issue-ready.yml` quita `ready` a los issues incompletos.
 
 **Cambio en la web**: trabaja en `feat/<tema>` → `web-reviewer` → `release-checker` → PR.
 
