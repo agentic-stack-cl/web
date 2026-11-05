@@ -8,9 +8,10 @@ Pasos (ver docs/DNS.md):
   python3 scripts/dns/setup.py github                    # activa el dominio en Pages y fuerza HTTPS
 
 Variables de entorno:
-  CLOUDFLARE_API_TOKEN   token con permisos Zone:Edit, DNS:Edit y Single Redirect:Edit (obligatorio
-                         para plan/apply; opcional para status)
-  CLOUDFLARE_ACCOUNT_ID  opcional si el token ve una sola cuenta
+  CLOUDFLARE_API_TOKEN   obligatorio para plan/apply; opcional para status. Si las zonas ya existen
+                         basta Zone:Read, DNS:Edit y Single Redirect:Edit sobre esas dos zonas;
+                         para que el script cree las zonas, Zone:Edit sobre la cuenta
+  CLOUDFLARE_ACCOUNT_ID  solo para crear zonas, y opcional si el token ve una sola cuenta
 
 El script es idempotente: se puede ejecutar varias veces. Nunca imprime el token.
 Solo usa la biblioteca estándar de Python (y `gh` para el paso `github`).
@@ -280,7 +281,7 @@ def client() -> Cloudflare:
 
 def cmd_plan_apply(args: argparse.Namespace, apply: bool) -> int:
     cf = client()
-    account = cf.account_id()
+    account: str | None = None  # solo se necesita para crear zonas
     nameservers: dict[str, list[str]] = {}
     for zone_name in (MAIN, ALIAS):
         print(f"\n== {zone_name}")
@@ -295,6 +296,7 @@ def cmd_plan_apply(args: argparse.Namespace, apply: bool) -> int:
                 if zone_name == ALIAS:
                     print(f"  + regla de redirección 301 → https://{MAIN}")
                 continue
+            account = account or cf.account_id()
             zone = cf.create_zone(zone_name, account)
             print(f"  ✓ zona creada ({zone['id']})")
         else:

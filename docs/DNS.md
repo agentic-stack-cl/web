@@ -16,28 +16,28 @@ Evita que otra cuenta de GitHub tome el dominio ([docs](https://docs.github.com/
 1. https://github.com/organizations/agentic-stack-cl/settings/pages → **Add a domain** → `agenticstack.cl`.
 2. Copia el **valor** del TXT que muestra GitHub (el nombre es `_github-pages-challenge-agentic-stack-cl.agenticstack.cl`). **No** presiones _Verify_ todavía.
 
-### 2. Cloudflare: crear el token (manual, 3 min)
+### 2. Cloudflare: crear las zonas y un token limitado a ellas (manual, 5 min)
 
-1. https://dash.cloudflare.com/profile/api-tokens → **Create Token** → **Create Custom Token**.
-2. Nombre: `agenticstack-dns`. Permisos:
+Recomendado: creas tú las dos zonas y el token solo puede tocar esas dos (mínimo privilegio).
+
+1. https://dash.cloudflare.com → **Add a domain** → `agenticstack.cl` → plan **Free**. Si ofrece importar registros, no hace falta (el dominio no tiene ninguno). Repite con `theagenticstack.cl`. Las zonas quedan en estado _pending_ hasta el paso 4.
+2. https://dash.cloudflare.com/profile/api-tokens → **Create Token** → **Create Custom Token**.
+3. Nombre: `agenticstack-dns`. Permisos:
 
    | Tipo | Recurso         | Permiso |
    | ---- | --------------- | ------- |
-   | Zone | Zone            | Edit    |
+   | Zone | Zone            | Read    |
    | Zone | DNS             | Edit    |
    | Zone | Single Redirect | Edit    |
 
-3. **Zone Resources**: _Include → All zones from an account →_ tu cuenta.
-4. **TTL**: una fecha de término cercana (p. ej. en 7 días). Crea el token y cópialo.
-5. Copia también tu **Account ID** (Dashboard → página de inicio de la cuenta → columna derecha, o en la URL `dash.cloudflare.com/<account-id>`).
+4. **Zone Resources**: _Include → Specific zone → `agenticstack.cl`_ y agrega otra fila _Include → Specific zone → `theagenticstack.cl`_.
+5. **TTL**: una fecha de término cercana (p. ej. en 7 días). Crea el token y cópialo.
+
+> Alternativa: que el script cree las zonas. Entonces el token necesita **Zone · Zone · Edit** con _Zone Resources → All zones from an account_, y debes definir `CLOUDFLARE_ACCOUNT_ID` (Dashboard → inicio de la cuenta → columna derecha). Da acceso a todas las zonas de la cuenta; úsalo solo si la cuenta es exclusiva de la comunidad.
 
 ### 3. Cloudflare: crear zonas, registros y redirección (script)
 
 En la raíz del repo, en tu terminal (el token no queda en el historial ni se imprime):
-
-```bash
-export CLOUDFLARE_ACCOUNT_ID=<tu-account-id>
-```
 
 ```bash
 read -rs CLOUDFLARE_API_TOKEN && export CLOUDFLARE_API_TOKEN
@@ -67,7 +67,7 @@ Para **cada** dominio: https://clientes.nic.cl → _Mis dominios_ → el dominio
 python3 scripts/dns/setup.py status --activation-check
 ```
 
-Repite hasta que `A agenticstack.cl` aparezca con ✅ y las zonas digan `active`. `status` funciona también sin token (solo DNS público y Pages).
+Repite hasta que `A agenticstack.cl` aparezca con ✅ y las zonas digan `active`. Con el token de solo lectura de zona, `--activation-check` puede no tener permiso; no importa: Cloudflare revisa solo cada cierto tiempo. `status` funciona también sin token (solo DNS público y Pages).
 
 ### 6. GitHub: verificar el dominio (manual, 1 min)
 

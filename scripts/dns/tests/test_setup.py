@@ -95,3 +95,33 @@ def test_sin_token_termina_con_mensaje(monkeypatch):
         assert "CLOUDFLARE_API_TOKEN" in str(exc.code)
     else:
         raise AssertionError("debió terminar")
+
+
+class RoutedCF(dns.Cloudflare):
+    """Cloudflare falso con zonas existentes: registra las rutas pedidas."""
+
+    def __init__(self):
+        super().__init__("token")
+        self.paths = []
+
+    def request(self, method, path, body=None, query=None):
+        self.paths.append((method, path))
+        if path == "/accounts":
+            raise AssertionError("no debería pedir la cuenta si las zonas existen")
+        if path == "/zones":
+            return [{"id": query["name"], "status": "active", "name_servers": ["a.ns", "b.ns"]}]
+        if path.endswith("/dns_records"):
+            return []
+        if path.endswith("/entrypoint"):
+            return None
+        return {}
+
+
+def test_plan_con_zonas_existentes_no_requiere_permiso_de_cuenta(monkeypatch, capsys):
+    cf = RoutedCF()
+    monkeypatch.setattr(dns, "client", lambda: cf)
+    monkeypatch.setattr(dns, "resolve", lambda name, rtype: [])
+    args = dns.argparse.Namespace(github_txt="tok", prune=False)
+    assert dns.cmd_plan_apply(args, apply=False) == 0
+    assert all(m == "GET" for m, _ in cf.paths)
+    assert "+ A" in capsys.readouterr().out
