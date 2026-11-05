@@ -8,11 +8,10 @@ export const SITE = {
   github: "https://github.com/agentic-stack-cl",
   repo: "https://github.com/agentic-stack-cl/web",
   /**
-   * Invitación permanente al servidor de Discord.
-   * TODO(owners): pegar el enlace de invitación (Discord → Invitar → "nunca expira").
-   * Mientras sea null, los botones "Únete" llevan a /comunidad#unete.
+   * Invitación permanente al servidor de Discord (sin caducidad ni límite de usos; entra
+   * a #bienvenida-y-reglas). Si es null, los botones "Únete" llevan a /comunidad#unete.
    */
-  discordInvite: null as string | null,
+  discordInvite: "https://discord.gg/P247bN6tms" as string | null,
 } as const;
 
 export const NAV = [

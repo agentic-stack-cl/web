@@ -25,6 +25,5 @@ El sitio es estático y se publica en **GitHub Pages** desde GitHub Actions.
 - **Dominio**: seguir [DNS.md](DNS.md) y luego configurar el custom domain.
 - **Actions puede abrir PRs**: _Settings → Actions → General → Workflow permissions_ → marcar _Allow GitHub Actions to create and approve pull requests_ (lo necesita `radar-sync.yml`).
 - **giscus**: instalar la app en el repo desde https://github.com/apps/giscus (_Only select repositories_ → `web`). Opcional: crear la categoría de Discussions **"Comentarios del blog"** (formato _Announcement_, para que solo giscus y maintainers abran discusiones), obtener su id en https://giscus.app/es y actualizar `GISCUS.category`/`categoryId` en `src/config.ts`. Hoy usa la categoría _Announcements_.
-- **Invitación a Discord**: pegar el enlace permanente en `SITE.discordInvite` (`src/config.ts`).
 - **Logo**: subir los archivos a `public/brand/` (ver su README). El sitio los detecta solo.
 - **Secrets del radar**: `DISCORD_TOKEN`, `FORUM_CHANNEL_ID`, `DISCORD_WEBHOOK_URL`.
