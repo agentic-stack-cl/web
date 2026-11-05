@@ -12,5 +12,5 @@ target-version = "py311"
 select = ["E", "F", "W", "I", "UP", "B", "SIM"]
 
 [tool.pytest.ini_options]
-testpaths = ["scripts/radar/tests", "scripts/issues/tests"]
-pythonpath = ["scripts/radar", "scripts/issues"]
+testpaths = ["scripts/radar/tests", "scripts/issues/tests", "scripts/dns/tests"]
+pythonpath = ["scripts/radar", "scripts/issues", "scripts/dns"]
