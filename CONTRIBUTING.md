@@ -60,6 +60,31 @@ Valida con `npm run radar:validate`. El esquema está en [.claude/rules/radar.md
 - Rama `feat/<tema>` o `fix/<tema>`.
 - Usa los tokens de color del brand (`brand-*`, `accent-*`), revisa modo claro y oscuro, móvil y contraste AA.
 
+## Ideas, backlog y tablero
+
+El trabajo se organiza en el [tablero "Web pública"](https://github.com/orgs/agentic-stack-cl/projects/1):
+
+| Etapa         | Qué significa                                                                           |
+| ------------- | --------------------------------------------------------------------------------------- |
+| **Ideas**     | Propuesta fuera del alcance actual. Sin compromiso ni prioridad. Lleva el label `idea`. |
+| **Backlog**   | Aceptada: se hará, todavía sin fecha.                                                   |
+| **Siguiente** | Lo próximo a tomar.                                                                     |
+| **En curso**  | Alguien la está trabajando (asígnate el issue).                                         |
+| **Revisión**  | Hay un PR abierto.                                                                      |
+| **Hecho**     | Mergeado y desplegado.                                                                  |
+
+La vista **Trabajo actual** oculta las ideas; la vista **Ideas** sirve para revisarlas.
+
+**Para proponer una idea**: abre un issue con el label `idea` (o comenta en una existente con 👍 y tu caso de uso).
+
+**Para pasar de Ideas a Backlog** una idea necesita:
+
+1. Alcance claro y criterios de aceptación en el issue.
+2. Al menos una persona interesada en hacerla.
+3. El visto bueno de un owner, que quita el label `idea`, la mueve a Backlog y le asigna prioridad.
+
+Los owners revisan las ideas una vez al mes: las aceptan, piden más detalle o las cierran explicando por qué.
+
 ## Commits y PRs
 
 - [Conventional Commits](https://www.conventionalcommits.org/es/) en español: `feat(blog): agrega post sobre evals`, `fix(radar): corrige cuadrante de MCP`.
