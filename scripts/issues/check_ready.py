@@ -77,6 +77,12 @@ def is_empty(content: str) -> bool:
     return norm(text) in {norm(m) for m in EMPTY_MARKERS}
 
 
+def says_none(text: str) -> bool:
+    """«Ninguna», «Ninguna: este issue decide…», «No hay.» cuentan como sin decisiones."""
+    t = norm(text)
+    return any(t == m or t.startswith(m + " ") for m in (norm(x) for x in NONE_MARKERS))
+
+
 def unresolved_decisions(content: str) -> list[str]:
     """Decisiones sin resolver. Resueltas: `- [x] ...`, `- ~~...~~` o «Ninguna»."""
     items: list[str] = []
@@ -88,10 +94,10 @@ def unresolved_decisions(content: str) -> list[str]:
         saw_list = True
         checked = bool(m.group(1)) and "x" in m.group(1).lower()
         text = m.group(2).strip()
-        if checked or text.startswith("~~") or norm(text) in NONE_MARKERS or not text:
+        if checked or text.startswith("~~") or says_none(text) or not text:
             continue
         items.append(text)
-    if not saw_list and not is_empty(content) and norm(content) not in NONE_MARKERS:
+    if not saw_list and not is_empty(content) and not says_none(content):
         items.append(content.strip().split("\n")[0])
     return items
 

@@ -64,6 +64,9 @@ def test_decisiones_abiertas():
     resolved = READY + "\n### Decisiones abiertas\n- [x] ¿Qué librería usamos? satori\n"
     assert cr.check(resolved, ["web"]) == []
     assert cr.check(READY + "\n## Decisiones abiertas\nNinguna\n", ["web"]) == []
+    assert (
+        cr.check(READY + "\n## Decisiones abiertas\nNinguna: este issue decide.\n", ["web"]) == []
+    )
 
 
 def test_labels():
