@@ -1,5 +1,10 @@
-# Owners de la organización revisan contenido y datos del radar.
+# Revisores automáticos de los PR. La última regla que coincide gana.
 # Si se crea un team (p. ej. @agentic-stack-cl/maintainers), reemplazar los handles por el team.
+
+# Por defecto: todo el repo lo revisan los owners de la organización.
+*               @sebmaldo @qnelo
+
+# Áreas sensibles (mismos owners hoy; separadas para poder asignar otros revisores después).
 /src/content/   @sebmaldo @qnelo
 /src/data/      @sebmaldo @qnelo
 /public/brand/  @sebmaldo @qnelo
