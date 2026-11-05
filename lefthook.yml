@@ -29,5 +29,5 @@ pre-push:
     build:
       run: npm run build
     pytest:
-      glob: "scripts/radar/**"
+      glob: "scripts/{radar,dns}/**"
       run: npm run test:py
