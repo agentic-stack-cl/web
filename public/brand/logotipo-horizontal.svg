@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 200" width="720" height="200">
+  <g transform="translate(20,20) scale(0.625)">
+    <rect width="256" height="256" rx="56" fill="#0F2A6B"/>
+    <rect x="52" y="172" width="152" height="30" rx="10" fill="#FFFFFF" opacity="0.5"/>
+    <rect x="52" y="130" width="152" height="30" rx="10" fill="#FFFFFF" opacity="0.75"/>
+    <rect x="64" y="66" width="152" height="30" rx="10" fill="#FFFFFF"/>
+    <circle cx="195" cy="81" r="17" fill="#0F2A6B"/>
+    <circle cx="195" cy="81" r="10" fill="#F97316"/>
+    <circle cx="195" cy="113" r="4" fill="#F97316"/>
+  </g>
+  <text x="215" y="88" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="30" font-weight="400" fill="#0F2A6B" letter-spacing="4">THE</text>
+  <text x="215" y="150" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="62" fill="#0F2A6B"><tspan font-weight="700">Agentic</tspan><tspan font-weight="400" dx="14">Stack</tspan></text>
+</svg>

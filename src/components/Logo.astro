@@ -1,25 +1,30 @@
 ---
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { BRAND } from "@/lib/brand";
 import { SITE } from "@/config";
+
+// El SVG va en línea (no como <img>) para que sus textos usen Inter, que carga la
+// página, y para poder aclarar el texto en modo oscuro con CSS sin tocar el archivo.
+function inline(path: string | null): string | null {
+  return path ? readFileSync(join(process.cwd(), "public", path), "utf8") : null;
+}
+
+const light = inline(BRAND.logoHorizontal);
+const dark = inline(BRAND.logoHorizontalWhite);
+const svgSize = "[&_svg]:h-10 [&_svg]:w-auto";
 ---
 
-{BRAND.logoHorizontal ? (
+{light ? (
   <>
-    <img
-      src={BRAND.logoHorizontal}
-      alt={SITE.name}
-      class:list={["h-8 w-auto", BRAND.logoHorizontalWhite && "dark:hidden"]}
-      width="180"
-      height="32"
+    <span
+      role="img"
+      aria-label={SITE.name}
+      class:list={["block", svgSize, dark ? "dark:hidden" : "dark:[&_text]:fill-white"]}
+      set:html={light}
     />
-    {BRAND.logoHorizontalWhite && (
-      <img
-        src={BRAND.logoHorizontalWhite}
-        alt={SITE.name}
-        class="hidden h-8 w-auto dark:block"
-        width="180"
-        height="32"
-      />
+    {dark && (
+      <span role="img" aria-label={SITE.name} class:list={["hidden dark:block", svgSize]} set:html={dark} />
     )}
   </>
 ) : (
