@@ -9,6 +9,18 @@ updates:
     labels: [infra]
     commit-message:
       prefix: "chore(deps)"
+    # Majors con incompatibilidades conocidas (nov 2026): TypeScript 7 no es compatible
+    # con @astrojs/check; ESLint 10 no es compatible con eslint-plugin-jsx-a11y.
+    # Revisar a mano y quitar de aquí cuando el ecosistema se ponga al día.
+    ignore:
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@eslint/js"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "eslint-plugin-astro"
+        update-types: ["version-update:semver-major"]
     groups:
       astro:
         patterns: ["astro", "@astrojs/*"]
