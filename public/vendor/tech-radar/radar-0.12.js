@@ -525,7 +525,7 @@ function radar_visualization(config) {
 
     // blip text
     if (d.active || config.print_layout) {
-      var blip_text = config.print_layout ? d.id : d.label.match(/[a-z]/i);
+      var blip_text = d.id;
       var big = config.blip_radius >= 12;
       blip.append("text")
         .text(blip_text)
