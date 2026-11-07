@@ -75,7 +75,7 @@ python3 scripts/radar/digest.py --since "7 days ago" --format discord
 npm run test:py   # tests (pytest vía uvx)
 ```
 
-El fixture `scripts/radar/fixtures/forum.json` tiene la misma forma que las respuestas de la API de Discord v10 y cubre: adopción de un blip sembrado, subida, bajada por empate, hilo nuevo, hilo bajo quórum, hilo sin tag de cuadrante y un hilo de otro canal.
+El fixture `scripts/radar/fixtures/forum.json` tiene la misma forma que las respuestas de la API de Discord v10 y cubre: adopción de un blip sembrado, subida, bajada por empate, hilo nuevo, hilo bajo quórum, hilo sin tag de cuadrante y un hilo de otro canal. Los tests lo aplican sobre `scripts/radar/fixtures/radar-base.json`, una copia fija del radar que no cambia con los votos.
 
 ## Archivos
 
