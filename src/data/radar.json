@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-04",
+  "updated": "2026-11-07",
   "entries": [
     {
       "id": "archivos-de-contexto",
@@ -17,13 +17,13 @@
       "id": "spec-driven-development",
       "name": "Desarrollo guiado por especificaciones",
       "quadrant": "tecnicas",
-      "ring": "probar",
-      "moved": 2,
+      "ring": "adoptar",
+      "moved": 1,
       "description": "Escribir primero una especificación breve (objetivo, criterios de aceptación, límites) y pedir al agente que planifique antes de codificar. Mejora la calidad en tareas grandes; en cambios chicos puede ser burocracia.",
-      "discussion": null,
-      "threadId": null,
-      "date": "2026-11-04",
-      "status": "propuesta"
+      "discussion": "https://discord.com/channels/1560089436203655230/1568366815669649509",
+      "threadId": "1568366815669649509",
+      "date": "2026-11-07",
+      "status": "votado"
     },
     {
       "id": "evals-de-agentes",
@@ -144,6 +144,162 @@
       "threadId": null,
       "date": "2026-11-04",
       "status": "propuesta"
+    },
+    {
+      "id": "aider",
+      "name": "Aider",
+      "quadrant": "herramientas",
+      "ring": "evaluar",
+      "moved": 2,
+      "description": "Programación en pareja con IA en la terminal, muy integrada a Git y con el modelo que elijas. Licencia Apache-2.0, gratis salvo tu API. Lleva sin commits desde mayo de 2026 y su última versión en PyPI es de febrero de 2026: evalúa el riesgo antes de adoptarlo.",
+      "discussion": "https://discord.com/channels/1560089436203655230/1568381773342183505",
+      "threadId": "1568381773342183505",
+      "date": "2026-11-07",
+      "status": "votado"
+    },
+    {
+      "id": "opencode",
+      "name": "OpenCode",
+      "quadrant": "herramientas",
+      "ring": "evaluar",
+      "moved": 2,
+      "description": "Agente de código abierto (MIT) con interfaz de terminal y app de escritorio en beta. El software es gratis; pagas tu proveedor, la consola por uso o OpenCode Go desde USD 10/mes. Sin soporte oficial para suscripciones de Claude.",
+      "discussion": "https://discord.com/channels/1560089436203655230/1568379800660217947",
+      "threadId": "1568379800660217947",
+      "date": "2026-11-07",
+      "status": "votado"
+    },
+    {
+      "id": "openai-codex-cli",
+      "name": "OpenAI Codex CLI",
+      "quadrant": "herramientas",
+      "ring": "adoptar",
+      "moved": 2,
+      "description": "Agente de terminal de OpenAI, abierto (Apache-2.0) y escrito en Rust. Por defecto escribe solo en tu workspace y corre sin red. Viene en los planes de ChatGPT: acceso limitado en Free, CLI completo desde Plus (USD 20/mes), o con API key a precio de API.",
+      "discussion": "https://discord.com/channels/1560089436203655230/1568379302221717564",
+      "threadId": "1568379302221717564",
+      "date": "2026-11-07",
+      "status": "votado"
+    },
+    {
+      "id": "claude-code",
+      "name": "Claude Code",
+      "quadrant": "herramientas",
+      "ring": "adoptar",
+      "moved": 2,
+      "description": "Agente de código de Anthropic para terminal, IDE, escritorio y web. Es propietario y está pensado para modelos Claude. Viene incluido desde USD 20/mes (Pro), Max desde USD 100 y Team desde USD 20 por puesto, o se paga por API.",
+      "discussion": "https://discord.com/channels/1560089436203655230/1568379038589001769",
+      "threadId": "1568379038589001769",
+      "date": "2026-11-07",
+      "status": "votado"
+    },
+    {
+      "id": "dspy",
+      "name": "DSPy",
+      "quadrant": "frameworks",
+      "ring": "probar",
+      "moved": 2,
+      "description": "Framework para programar con LLMs en vez de escribir prompts a mano: defines módulos y métricas, y DSPy optimiza los prompts y ejemplos.",
+      "discussion": "https://discord.com/channels/1560089436203655230/1568378582416363621",
+      "threadId": "1568378582416363621",
+      "date": "2026-11-07",
+      "status": "votado"
+    },
+    {
+      "id": "crewai",
+      "name": "CrewAI",
+      "quadrant": "frameworks",
+      "ring": "evaluar",
+      "moved": 2,
+      "description": "Framework en Python para equipos de agentes con roles y tareas. Rápido para armar prototipos multiagente; conviene evaluar cuánto control da en producción.",
+      "discussion": "https://discord.com/channels/1560089436203655230/1568378302878584832",
+      "threadId": "1568378302878584832",
+      "date": "2026-11-07",
+      "status": "votado"
+    },
+    {
+      "id": "pydantic-ai",
+      "name": "Pydantic AI",
+      "quadrant": "frameworks",
+      "ring": "probar",
+      "moved": 2,
+      "description": "Framework de agentes en Python del equipo de Pydantic: salidas tipadas y validadas, inyección de dependencias y soporte para varios proveedores de modelos.",
+      "discussion": "https://discord.com/channels/1560089436203655230/1568377804314386522",
+      "threadId": "1568377804314386522",
+      "date": "2026-11-07",
+      "status": "votado"
+    },
+    {
+      "id": "issues-listos-para-agentes-definition-of-ready",
+      "name": "Issues listos para agentes (Definition of Ready)",
+      "quadrant": "tecnicas",
+      "ring": "probar",
+      "moved": 2,
+      "description": "Issues con contexto, alcance, criterios de aceptación y forma de verificar, para que un agente los implemente sin adivinar. El issue es el prompt.",
+      "discussion": "https://discord.com/channels/1560089436203655230/1568376117063188623",
+      "threadId": "1568376117063188623",
+      "date": "2026-11-07",
+      "status": "votado"
+    },
+    {
+      "id": "superpowers",
+      "name": "Superpowers",
+      "quadrant": "tecnicas",
+      "ring": "evaluar",
+      "moved": 2,
+      "description": "Metodología para agentes hecha de 15 skills que se activan solas: te pregunta antes de codear, escribe plan, aplica TDD y delega en subagentes. Es gratis; la evidencia independiente muestra más costo que Claude Code solo.",
+      "discussion": "https://discord.com/channels/1560089436203655230/1568374329937363044",
+      "threadId": "1568374329937363044",
+      "date": "2026-11-07",
+      "status": "votado"
+    },
+    {
+      "id": "bmad-method",
+      "name": "BMAD Method",
+      "quadrant": "tecnicas",
+      "ring": "esperar",
+      "moved": 2,
+      "description": "Método ágil con agentes por rol (producto, arquitectura, UX, QA) que ajusta la planificación al tamaño del cambio. Es gratis, pero fue el framework más caro y lento del benchmark Uvik, y la v7 aún es alfa.",
+      "discussion": "https://discord.com/channels/1560089436203655230/1568369216946708630",
+      "threadId": "1568369216946708630",
+      "date": "2026-11-07",
+      "status": "votado"
+    },
+    {
+      "id": "openspec",
+      "name": "OpenSpec",
+      "quadrant": "tecnicas",
+      "ring": "adoptar",
+      "moved": 2,
+      "description": "Framework liviano de specs para agentes: cada cambio se propone y revisa en una carpeta openspec/ antes de codear, sin fases rígidas. Es gratis y lo más barato en planificación de los cuatro frameworks medidos en un benchmark de 2026.",
+      "discussion": "https://discord.com/channels/1560089436203655230/1568368848498069554",
+      "threadId": "1568368848498069554",
+      "date": "2026-11-07",
+      "status": "votado"
+    },
+    {
+      "id": "github-spec-kit",
+      "name": "GitHub Spec Kit",
+      "quadrant": "tecnicas",
+      "ring": "probar",
+      "moved": 2,
+      "description": "Toolkit de GitHub para desarrollo guiado por specs: instalas el CLI specify y tu agente sigue pasos fijos de constitución, spec, plan y tareas. Es gratis, pero suma más tokens y tiempo de planificación que OpenSpec.",
+      "discussion": "https://discord.com/channels/1560089436203655230/1568368549196468245",
+      "threadId": "1568368549196468245",
+      "date": "2026-11-07",
+      "status": "votado"
+    },
+    {
+      "id": "paperclip",
+      "name": "Paperclip",
+      "quadrant": "herramientas",
+      "ring": "esperar",
+      "moved": 2,
+      "description": "Qué es: plataforma open source (MIT) para orquestar equipos de agentes de IA como si fueran una empresa: organigrama con roles y permisos, objetivos de negocio que se descomponen en tareas, etapas de revisión y aprobación, y control de costos por agente, proyecto y modelo. No…",
+      "discussion": "https://discord.com/channels/1560089436203655230/1567700747129196635",
+      "threadId": "1567700747129196635",
+      "date": "2026-11-07",
+      "status": "votado"
     }
   ]
 }
