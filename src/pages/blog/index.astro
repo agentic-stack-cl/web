@@ -56,9 +56,9 @@ const tags = [...(await getTags()).entries()];
             <li>
               <a
                 href={`/blog/etiquetas/${tag}`}
-                class="rounded-full bg-brand-50 px-2.5 py-1 text-sm text-brand-800 hover:bg-brand-100 dark:bg-brand-900 dark:text-brand-100 dark:hover:bg-brand-800"
+                class="inline-flex min-h-9 items-center rounded-full bg-brand-50 px-3 py-1.5 text-sm text-brand-800 hover:bg-brand-100 dark:bg-brand-900 dark:text-brand-100 dark:hover:bg-brand-800"
               >
-                #{tag} <span class="text-brand-600 dark:text-brand-300">({n})</span>
+                #{tag} <span class="text-brand-600 dark:text-brand-300">&nbsp;({n})</span>
               </a>
             </li>
           ))}

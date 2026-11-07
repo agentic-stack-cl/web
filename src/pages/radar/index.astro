@@ -2,7 +2,7 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import PageHeader from "@/components/PageHeader.astro";
 import { getCollection } from "astro:content";
-import { QUADRANTS, RINGS, MOVED_LABEL, ring as ringOf } from "@/lib/radar";
+import { QUADRANTS, RINGS, MOVED_LABEL, ring as ringOf, type QuadrantId } from "@/lib/radar";
 import { numberBlips, radarQuadrants, toRadarEntries } from "@/lib/radar-layout";
 import { formatDate } from "@/lib/blog";
 import radarData from "@/data/radar.json";
@@ -19,6 +19,13 @@ const radarConfig = {
 };
 
 const movedIcon: Record<number, string> = { 2: "★", 1: "▲", 0: "", [-1]: "▼" };
+
+const TAB_LABEL: Record<QuadrantId, string> = {
+  tecnicas: "Técnicas",
+  frameworks: "Frameworks",
+  herramientas: "Herramientas",
+  modelos: "Modelos",
+};
 ---
 
 <BaseLayout
@@ -47,114 +54,223 @@ const movedIcon: Record<number, string> = { 2: "★", 1: "▲", 0: "", [-1]: "�
   </PageHeader>
 
   <section class="container-page" aria-labelledby="grafico-h">
-    <h2 id="grafico-h" class="sr-only">
-      Gráfico del radar
-    </h2>
-    <figure class="card overflow-hidden p-2 sm:p-4">
+    <div class="flex items-center justify-between gap-4">
+      <h2 id="grafico-h" class="text-2xl font-bold text-brand-900 dark:text-white">
+        El mapa
+      </h2>
+      <button
+        type="button"
+        id="radar-chart-toggle"
+        aria-expanded="false"
+        aria-controls="radar-chart"
+        class="btn-secondary lg:hidden"
+      >
+        Ver gráfico interactivo
+      </button>
+    </div>
+    <figure id="radar-chart" class="card mt-4 hidden overflow-hidden p-2 sm:p-4 lg:block">
       <svg id="radar" class="radar-svg mx-auto block h-auto w-full" aria-labelledby="radar-desc">
         <desc id="radar-desc">
           Gráfico del radar con {blips.length} ítems en cuatro cuadrantes y cuatro anillos. Los mismos datos
-          están en la tabla a continuación.
+          están en la lista y la tabla a continuación.
         </desc>
       </svg>
       <figcaption class="mt-2 px-2 text-sm text-slate-600 dark:text-slate-400">
         <span aria-hidden="true">★ nuevo · ▲ subió · ▼ bajó · ● sin cambios.</span> Pasa el cursor sobre un
-        punto para ver su nombre; haz clic para ir a su ficha. El detalle completo está en la tabla.
+        punto para ver su nombre; haz clic para ir a su ficha. El detalle completo está más abajo.
       </figcaption>
       <noscript>
-        <p class="p-4">El gráfico necesita JavaScript. La tabla de abajo tiene toda la información.</p>
+        <p class="p-4">El gráfico necesita JavaScript. La lista de abajo tiene toda la información.</p>
       </noscript>
     </figure>
   </section>
 
-  <section class="container-page mt-12 space-y-12" aria-labelledby="tabla-h">
+  <section class="container-page mt-12" aria-labelledby="tabla-h">
     <h2 id="tabla-h" class="text-2xl font-bold text-brand-900 dark:text-white">
       Todos los ítems
     </h2>
-    <ul class="flex flex-wrap gap-x-6 gap-y-2 text-sm" aria-label="Anillos">
+    <ul class="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm" aria-label="Anillos">
       {RINGS.map((r) => (
-        <li>
-          <span aria-hidden="true">{r.emoji}</span> <strong>{r.name}</strong>: {r.summary}
+        <li class="flex items-center gap-2">
+          <span
+            class="size-2.5 rounded-full"
+            style={`background-color: ${r.color}`}
+            aria-hidden="true"
+          ></span>
+          <span>
+            <span aria-hidden="true">{r.emoji}</span> <strong>{r.name}</strong>: {r.summary}
+          </span>
         </li>
       ))}
     </ul>
-    {QUADRANTS.map((q) => {
-      const items = blips
-        .filter((b) => b.data.quadrant === q.id)
-        .sort((a, b) => numbers.get(a.id)! - numbers.get(b.id)!);
-      return (
-        <section aria-labelledby={`q-${q.id}`}>
-          <h3 id={`q-${q.id}`} class="text-xl font-semibold text-brand-900 dark:text-white">
-            {q.name}
-          </h3>
-          <div class="mt-4 overflow-x-auto rounded-xl border border-slate-200 dark:border-brand-900">
-            <table class="w-full min-w-xl text-left text-sm">
-              <caption class="sr-only">Ítems del cuadrante {q.name}</caption>
-              <thead class="bg-slate-50 text-slate-700 dark:bg-brand-950 dark:text-slate-300">
-                <tr>
-                  <th scope="col" class="w-12 px-3 py-2 font-semibold">
-                    <abbr title="Número en el gráfico">N.º</abbr>
-                  </th>
-                  <th scope="col" class="px-3 py-2 font-semibold">
-                    Ítem
-                  </th>
-                  <th scope="col" class="w-32 px-3 py-2 font-semibold">
-                    Anillo
-                  </th>
-                  <th scope="col" class="w-36 px-3 py-2 font-semibold">
-                    Estado
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-200 dark:divide-brand-900">
-                {items.map((b) => {
-                  const r = ringOf(b.data.ring);
-                  return (
-                    <tr
-                      id={`blip-${b.id}`}
-                      class="scroll-mt-24 align-top target:bg-accent-50 dark:target:bg-brand-900"
-                    >
-                      <td class="px-3 py-3 font-mono text-slate-600 dark:text-slate-400">
-                        {numbers.get(b.id)}
-                      </td>
-                      <th scope="row" class="px-3 py-3 font-normal">
-                        <span class="font-semibold text-brand-900 dark:text-white">{b.data.name}</span>
-                        <p class="mt-1 text-slate-700 dark:text-slate-300">{b.data.description}</p>
-                      </th>
-                      <td class="px-3 py-3 whitespace-nowrap">
-                        <span aria-hidden="true">{r.emoji}</span> {r.name}
-                        {b.data.moved !== 0 && (
-                          <span class="block text-xs text-slate-600 dark:text-slate-400">
-                            <span aria-hidden="true">{movedIcon[b.data.moved]} </span>
-                            {MOVED_LABEL[b.data.moved]}
-                          </span>
-                        )}
-                      </td>
-                      <td class="px-3 py-3">
-                        {b.data.status === "propuesta" ? (
-                          <span class="rounded bg-accent-100 px-1.5 py-0.5 text-xs font-semibold text-accent-900">
-                            Propuesta
-                          </span>
-                        ) : (
-                          <span class="rounded bg-green-100 px-1.5 py-0.5 text-xs font-semibold text-green-900">
-                            Votado
-                          </span>
-                        )}
-                        {b.data.discussion && (
-                          <a class="link mt-1 block text-xs" href={b.data.discussion}>
-                            Hilo en Discord<span class="sr-only"> sobre {b.data.name}</span>
-                          </a>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+
+    {/* Mobile: pestañas por cuadrante con tarjetas táctiles */}
+    <div class="mt-8 lg:hidden">
+      <div
+        role="tablist"
+        aria-label="Cuadrantes del radar"
+        class="-mx-4 flex gap-2 overflow-x-auto px-4 pb-2"
+      >
+        {QUADRANTS.map((q, i) => (
+          <button
+            type="button"
+            role="tab"
+            id={`tab-${q.id}`}
+            aria-controls={`panel-${q.id}`}
+            aria-selected={i === 0 ? "true" : "false"}
+            tabindex={i === 0 ? 0 : -1}
+            class="min-h-11 shrink-0 rounded-full border border-slate-200 px-4 text-sm font-semibold whitespace-nowrap text-slate-700 transition-colors aria-selected:border-brand-800 aria-selected:bg-brand-800 aria-selected:text-white dark:border-brand-800 dark:text-slate-300 dark:aria-selected:border-accent-500 dark:aria-selected:bg-accent-500 dark:aria-selected:text-brand-950"
+          >
+            {TAB_LABEL[q.id]}
+          </button>
+        ))}
+      </div>
+      {QUADRANTS.map((q, i) => {
+        const items = blips
+          .filter((b) => b.data.quadrant === q.id)
+          .sort((a, b) => numbers.get(a.id)! - numbers.get(b.id)!);
+        return (
+          <div
+            role="tabpanel"
+            id={`panel-${q.id}`}
+            aria-labelledby={`tab-${q.id}`}
+            hidden={i !== 0}
+            class="mt-4"
+          >
+            <p class="text-sm font-medium text-slate-600 dark:text-slate-400">{q.name}</p>
+            <ul class="mt-3 grid gap-3">
+              {items.map((b) => {
+                const r = ringOf(b.data.ring);
+                return (
+                  <li class="card p-4">
+                    <div class="flex items-start justify-between gap-3">
+                      <p class="font-semibold text-brand-900 dark:text-white">
+                        <span class="mr-1.5 font-mono text-xs font-normal text-slate-500 dark:text-slate-400">
+                          {numbers.get(b.id)}
+                        </span>
+                        {b.data.name}
+                      </p>
+                      <span class="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-slate-200 px-2.5 py-1 text-xs font-semibold whitespace-nowrap dark:border-brand-800">
+                        <span
+                          class="size-2 rounded-full"
+                          style={`background-color: ${r.color}`}
+                          aria-hidden="true"
+                        ></span>
+                        {r.name}
+                      </span>
+                    </div>
+                    <p class="mt-2 text-sm text-slate-700 dark:text-slate-300">{b.data.description}</p>
+                    <div class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs">
+                      {b.data.moved !== 0 && (
+                        <span class="font-medium text-slate-600 dark:text-slate-400">
+                          <span aria-hidden="true">{movedIcon[b.data.moved]} </span>
+                          {MOVED_LABEL[b.data.moved]}
+                        </span>
+                      )}
+                      {b.data.status === "propuesta" ? (
+                        <span class="rounded bg-accent-100 px-1.5 py-0.5 font-semibold text-accent-900">
+                          Propuesta
+                        </span>
+                      ) : (
+                        <span class="rounded bg-green-100 px-1.5 py-0.5 font-semibold text-green-900 dark:bg-green-950 dark:text-green-200">
+                          Votado
+                        </span>
+                      )}
+                      {b.data.discussion && (
+                        <a class="link inline-flex min-h-11 items-center" href={b.data.discussion}>
+                          Hilo en Discord<span class="sr-only"> sobre {b.data.name}</span>
+                        </a>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
-        </section>
-      );
-    })}
+        );
+      })}
+    </div>
+
+    {/* Desktop: tabla por cuadrante */}
+    <div class="mt-8 hidden space-y-12 lg:block">
+      {QUADRANTS.map((q) => {
+        const items = blips
+          .filter((b) => b.data.quadrant === q.id)
+          .sort((a, b) => numbers.get(a.id)! - numbers.get(b.id)!);
+        return (
+          <section aria-labelledby={`q-${q.id}`}>
+            <h3 id={`q-${q.id}`} class="text-xl font-semibold text-brand-900 dark:text-white">
+              {q.name}
+            </h3>
+            <div class="mt-4 overflow-x-auto rounded-xl border border-slate-200 dark:border-brand-900">
+              <table class="w-full text-left text-sm">
+                <caption class="sr-only">Ítems del cuadrante {q.name}</caption>
+                <thead class="bg-slate-50 text-slate-700 dark:bg-brand-950 dark:text-slate-300">
+                  <tr>
+                    <th scope="col" class="w-12 px-3 py-2 font-semibold">
+                      <abbr title="Número en el gráfico">N.º</abbr>
+                    </th>
+                    <th scope="col" class="px-3 py-2 font-semibold">
+                      Ítem
+                    </th>
+                    <th scope="col" class="w-32 px-3 py-2 font-semibold">
+                      Anillo
+                    </th>
+                    <th scope="col" class="w-36 px-3 py-2 font-semibold">
+                      Estado
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 dark:divide-brand-900">
+                  {items.map((b) => {
+                    const r = ringOf(b.data.ring);
+                    return (
+                      <tr
+                        id={`blip-${b.id}`}
+                        class="scroll-mt-24 align-top target:bg-accent-50 dark:target:bg-brand-900"
+                      >
+                        <td class="px-3 py-3 font-mono text-slate-600 dark:text-slate-400">
+                          {numbers.get(b.id)}
+                        </td>
+                        <th scope="row" class="px-3 py-3 font-normal">
+                          <span class="font-semibold text-brand-900 dark:text-white">{b.data.name}</span>
+                          <p class="mt-1 text-slate-700 dark:text-slate-300">{b.data.description}</p>
+                        </th>
+                        <td class="px-3 py-3 whitespace-nowrap">
+                          <span aria-hidden="true">{r.emoji}</span> {r.name}
+                          {b.data.moved !== 0 && (
+                            <span class="block text-xs text-slate-600 dark:text-slate-400">
+                              <span aria-hidden="true">{movedIcon[b.data.moved]} </span>
+                              {MOVED_LABEL[b.data.moved]}
+                            </span>
+                          )}
+                        </td>
+                        <td class="px-3 py-3">
+                          {b.data.status === "propuesta" ? (
+                            <span class="rounded bg-accent-100 px-1.5 py-0.5 text-xs font-semibold text-accent-900">
+                              Propuesta
+                            </span>
+                          ) : (
+                            <span class="rounded bg-green-100 px-1.5 py-0.5 text-xs font-semibold text-green-900 dark:bg-green-950 dark:text-green-200">
+                              Votado
+                            </span>
+                          )}
+                          {b.data.discussion && (
+                            <a class="link mt-1 block text-xs" href={b.data.discussion}>
+                              Hilo en Discord<span class="sr-only"> sobre {b.data.name}</span>
+                            </a>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        );
+      })}
+    </div>
   </section>
 
   <script is:inline src="/vendor/d3-7.9.0.min.js"></script>
@@ -203,6 +319,44 @@ const movedIcon: Record<number, string> = { 2: "★", 1: "▲", 0: "", [-1]: "�
       draw();
       window.addEventListener("themechange", draw);
       wide.addEventListener("change", draw);
+
+      // Toggle del gráfico en mobile
+      const toggle = document.getElementById("radar-chart-toggle");
+      const chart = document.getElementById("radar-chart");
+      if (toggle && chart) {
+        toggle.addEventListener("click", () => {
+          const show = chart.classList.toggle("hidden") === false;
+          toggle.setAttribute("aria-expanded", String(show));
+          toggle.textContent = show ? "Ocultar gráfico" : "Ver gráfico interactivo";
+        });
+      }
+
+      // Pestañas de cuadrantes en mobile
+      const tabs = [...document.querySelectorAll('[role="tab"]')];
+      const panels = tabs.map((t) => document.getElementById(t.getAttribute("aria-controls")));
+      function selectTab(next) {
+        tabs.forEach((t, i) => {
+          const active = t === next;
+          t.setAttribute("aria-selected", String(active));
+          t.tabIndex = active ? 0 : -1;
+          panels[i].hidden = !active;
+        });
+      }
+      tabs.forEach((tab, i) => {
+        tab.addEventListener("click", () => selectTab(tab));
+        tab.addEventListener("keydown", (e) => {
+          let j = null;
+          if (e.key === "ArrowRight") j = (i + 1) % tabs.length;
+          if (e.key === "ArrowLeft") j = (i - 1 + tabs.length) % tabs.length;
+          if (e.key === "Home") j = 0;
+          if (e.key === "End") j = tabs.length - 1;
+          if (j !== null) {
+            e.preventDefault();
+            selectTab(tabs[j]);
+            tabs[j].focus();
+          }
+        });
+      });
     })();
   </script>
 </BaseLayout>

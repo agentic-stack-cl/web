@@ -24,24 +24,40 @@ const pillars = [
     body: "Un blog abierto donde cualquier miembro puede publicar aprendizajes, guías y experimentos, con revisión entre pares.",
   },
 ];
+
+const steps = [
+  {
+    title: "Entra al Discord",
+    body: "Preséntate en el canal de bienvenida y cuéntanos en qué estás trabajando.",
+  },
+  {
+    title: "Participa en el foro",
+    body: "Abre o comenta hilos y vota los ítems del radar con reacciones.",
+  },
+];
 ---
 
 <BaseLayout>
   <section class="relative overflow-hidden bg-brand-800 text-white dark:bg-brand-950">
+    <div class="brand-glow pointer-events-none absolute inset-0" aria-hidden="true"></div>
+    <div
+      class="dot-grid pointer-events-none absolute inset-0 text-white/10 [mask-image:radial-gradient(ellipse_70%_60%_at_50%_40%,black,transparent)]"
+      aria-hidden="true"
+    ></div>
     <div
       class="pointer-events-none absolute -top-24 -right-24 size-96 rounded-full bg-accent-500/25 blur-3xl"
       aria-hidden="true"
     ></div>
     <div class="container-page relative py-20 sm:py-28">
       <p class="text-sm font-semibold tracking-wide text-accent-300 uppercase">Comunidad chilena</p>
-      <h1 class="mt-3 max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl">
+      <h1 class="mt-3 max-w-3xl text-4xl font-bold tracking-tight text-balance sm:text-5xl lg:text-6xl">
         Desarrollo de software agéntico, en comunidad.
       </h1>
       <p class="mt-6 max-w-2xl text-lg text-brand-100">
         {SITE.name} reúne a desarrolladoras y desarrolladores que construyen con agentes de IA: compartimos
         prácticas, votamos un radar tecnológico y escribimos lo que aprendemos.
       </p>
-      <div class="mt-10 flex flex-wrap gap-3">
+      <div class="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <a
           href={joinHref}
           class="btn bg-accent-500 text-brand-950 hover:bg-accent-400 focus-visible:outline-white"
@@ -60,9 +76,12 @@ const pillars = [
       Qué hacemos
     </h2>
     <div class="mt-8 grid gap-6 md:grid-cols-3">
-      {pillars.map((p) => (
+      {pillars.map((p, i) => (
         <div class="card">
-          <h3 class="text-lg font-semibold text-brand-900 dark:text-white">{p.title}</h3>
+          <p class="font-mono text-sm font-bold text-accent-700 dark:text-accent-400" aria-hidden="true">
+            {String(i + 1).padStart(2, "0")}
+          </p>
+          <h3 class="mt-2 text-lg font-semibold text-brand-900 dark:text-white">{p.title}</h3>
           <p class="mt-2 text-slate-700 dark:text-slate-300">{p.body}</p>
         </div>
       ))}
@@ -80,7 +99,7 @@ const pillars = [
           Inspirado en el radar de ThoughtWorks: cada ítem se discute en un hilo del foro y la comunidad vota
           su anillo con reacciones. El sitio se actualiza solo.
         </p>
-        <div class="mt-6 flex flex-wrap gap-3">
+        <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
           <a href="/radar" class="btn-primary">
             Explorar el radar
           </a>
@@ -91,9 +110,14 @@ const pillars = [
       </div>
       <ul class="grid grid-cols-2 gap-4">
         {byRing.map((r) => (
-          <li class="card">
-            <p class="text-3xl font-bold text-brand-900 dark:text-white">{r.count}</p>
-            <p class="mt-1 font-medium">
+          <li class="card relative overflow-hidden">
+            <span
+              class="absolute inset-y-0 left-0 w-1"
+              style={`background-color: ${r.color}`}
+              aria-hidden="true"
+            ></span>
+            <p class="text-3xl font-bold text-brand-900 tabular-nums dark:text-white">{r.count}</p>
+            <p class="mt-1 font-medium text-slate-700 dark:text-slate-300">
               <span aria-hidden="true">{r.emoji}</span> {r.name}
             </p>
           </li>
@@ -125,23 +149,26 @@ const pillars = [
       Cómo unirte
     </h2>
     <ol class="mt-8 grid gap-6 md:grid-cols-3">
+      {steps.map((s, i) => (
+        <li class="card">
+          <p class="text-3xl font-bold tracking-tight text-brand-200 dark:text-brand-700" aria-hidden="true">
+            {String(i + 1).padStart(2, "0")}
+          </p>
+          <h3 class="mt-2 font-semibold text-brand-900 dark:text-white">
+            <span class="sr-only">Paso {i + 1}: </span>
+            {s.title}
+          </h3>
+          <p class="mt-2 text-slate-700 dark:text-slate-300">{s.body}</p>
+        </li>
+      ))}
       <li class="card">
-        <p class="text-sm font-bold text-accent-700 dark:text-accent-400">Paso 1</p>
-        <h3 class="mt-1 font-semibold text-brand-900 dark:text-white">Entra al Discord</h3>
-        <p class="mt-2 text-slate-700 dark:text-slate-300">
-          Preséntate en el canal de bienvenida y cuéntanos en qué estás trabajando.
+        <p class="text-3xl font-bold tracking-tight text-brand-200 dark:text-brand-700" aria-hidden="true">
+          03
         </p>
-      </li>
-      <li class="card">
-        <p class="text-sm font-bold text-accent-700 dark:text-accent-400">Paso 2</p>
-        <h3 class="mt-1 font-semibold text-brand-900 dark:text-white">Participa en el foro</h3>
-        <p class="mt-2 text-slate-700 dark:text-slate-300">
-          Abre o comenta hilos y vota los ítems del radar con reacciones.
-        </p>
-      </li>
-      <li class="card">
-        <p class="text-sm font-bold text-accent-700 dark:text-accent-400">Paso 3</p>
-        <h3 class="mt-1 font-semibold text-brand-900 dark:text-white">Contribuye</h3>
+        <h3 class="mt-2 font-semibold text-brand-900 dark:text-white">
+          <span class="sr-only">Paso 3: </span>
+          Contribuye
+        </h3>
         <p class="mt-2 text-slate-700 dark:text-slate-300">
           Escribe un post o mejora este sitio: todo es abierto en{" "}
           <a class="link" href={SITE.repo}>
