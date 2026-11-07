@@ -92,10 +92,10 @@
       "ring": "adoptar",
       "moved": 2,
       "description": "Protocolo abierto para conectar agentes con herramientas y datos. Amplio soporte en clientes y servidores; revisa permisos y origen de cada servidor antes de instalarlo.",
-      "discussion": null,
-      "threadId": null,
+      "discussion": "https://discord.com/channels/1560089436203655230/1568388233904267346",
+      "threadId": "1568388233904267346",
       "date": "2026-11-04",
-      "status": "propuesta"
+      "status": "votado"
     },
     {
       "id": "agentes-de-codigo-en-terminal",
