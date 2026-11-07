@@ -15,6 +15,6 @@ export default [
   {
     // Scripts inline del radar: usan la API global de radar.js
     files: ["src/pages/radar/index.astro"],
-    languageOptions: { globals: { radar_visualization: "readonly" } },
+    languageOptions: { globals: { radar_visualization: "readonly", d3: "readonly" } },
   },
 ];

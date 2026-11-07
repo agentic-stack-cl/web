@@ -45,6 +45,7 @@ function radar_visualization(config) {
   config.footer_offset = config.footer_offset || { x: -155, y: 450 };
   config.legend_column_width = config.legend_column_width || 140
   config.legend_line_height = config.legend_line_height || 10
+  config.blip_radius = config.blip_radius || 9
 
   // custom random number generator, to make random sequence reproducible
   // source: https://stackoverflow.com/questions/521295
@@ -264,7 +265,7 @@ function radar_visualization(config) {
         .attr("y", -rings[i].radius + 62)
         .attr("text-anchor", "middle")
         .style("fill", config.rings[i].color)
-        .style("opacity", 0.35)
+        .style("opacity", 0.15)
         .style("font-family", config.font_family)
         .style("font-size", "42px")
         .style("font-weight", "bold")
@@ -464,12 +465,14 @@ function radar_visualization(config) {
 
   function highlightLegendItem(d) {
     var legendItem = document.getElementById("legendItem" + d.id);
+    if (!legendItem) return;
     legendItem.setAttribute("filter", "url(#solid)");
     legendItem.setAttribute("fill", "white");
   }
 
   function unhighlightLegendItem(d) {
     var legendItem = document.getElementById("legendItem" + d.id);
+    if (!legendItem) return;
     legendItem.removeAttribute("filter");
     legendItem.removeAttribute("fill");
   }
@@ -485,6 +488,7 @@ function radar_visualization(config) {
         .on("mouseout", function(event, d) { hideBubble(d); unhighlightLegendItem(d); });
 
   // configure each blip
+  var blip_scale = config.blip_radius / 9;
   blips.each(function(d) {
     var blip = d3.select(this);
 
@@ -502,31 +506,35 @@ function radar_visualization(config) {
     if (d.moved == 1) {
       blip.append("path")
         .attr("d", "M -11,5 11,5 0,-13 z") // triangle pointing up
+        .attr("transform", "scale(" + blip_scale + ")")
         .style("fill", d.color);
     } else if (d.moved == -1) {
       blip.append("path")
         .attr("d", "M -11,-5 11,-5 0,13 z") // triangle pointing down
+        .attr("transform", "scale(" + blip_scale + ")")
         .style("fill", d.color);
     } else if (d.moved == 2) {
       blip.append("path")
-        .attr("d", d3.symbol().type(d3.symbolStar).size(200))
+        .attr("d", d3.symbol().type(d3.symbolStar).size(200 * blip_scale * blip_scale))
         .style("fill", d.color);
     } else {
       blip.append("circle")
-        .attr("r", 9)
+        .attr("r", config.blip_radius)
         .attr("fill", d.color);
     }
 
     // blip text
     if (d.active || config.print_layout) {
       var blip_text = config.print_layout ? d.id : d.label.match(/[a-z]/i);
+      var big = config.blip_radius >= 12;
       blip.append("text")
         .text(blip_text)
-        .attr("y", 3)
+        .attr("y", big ? 4 : 3)
         .attr("text-anchor", "middle")
         .style("fill", "#fff")
         .style("font-family", config.font_family)
-        .style("font-size", function(d) { return blip_text.length > 2 ? "8px" : "9px"; })
+        .style("font-size", big ? "11px" : (blip_text.length > 2 ? "8px" : "9px"))
+        .style("font-weight", big ? "bold" : "normal")
         .style("pointer-events", "none")
         .style("user-select", "none");
     }
@@ -543,7 +551,7 @@ function radar_visualization(config) {
   d3.forceSimulation()
     .nodes(config.entries)
     .velocityDecay(0.19) // magic number (found by experimentation)
-    .force("collision", d3.forceCollide().radius(12).strength(0.85))
+    .force("collision", d3.forceCollide().radius(config.blip_radius + 3).strength(0.85))
     .on("tick", ticked);
 
   function ringDescriptionsTable() {

@@ -3,7 +3,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import PageHeader from "@/components/PageHeader.astro";
 import { getCollection } from "astro:content";
 import { QUADRANTS, RINGS, MOVED_LABEL, ring as ringOf, type QuadrantId } from "@/lib/radar";
-import { numberBlips, radarQuadrants, toRadarEntries } from "@/lib/radar-layout";
+import { numberBlips, radarQuadrants, toRadarEntries, RADAR_POSITION } from "@/lib/radar-layout";
 import { formatDate } from "@/lib/blog";
 import radarData from "@/data/radar.json";
 
@@ -17,6 +17,22 @@ const radarConfig = {
   rings: RINGS.map((r) => ({ name: r.name.toUpperCase(), color: r.color })),
   entries: toRadarEntries(blips),
 };
+
+const blipDetails = blips
+  .map((b) => {
+    const r = ringOf(b.data.ring);
+    return {
+      num: numbers.get(b.id)!,
+      name: b.data.name,
+      ring: r.name,
+      ringColor: r.color,
+      moved: b.data.moved,
+      status: b.data.status,
+      description: b.data.description,
+      discussion: b.data.discussion ?? null,
+    };
+  })
+  .sort((a, b) => a.num - b.num);
 
 const movedIcon: Record<number, string> = { 2: "★", 1: "▲", 0: "", [-1]: "▼" };
 
@@ -69,6 +85,31 @@ const TAB_LABEL: Record<QuadrantId, string> = {
       </button>
     </div>
     <figure id="radar-chart" class="card mt-4 hidden overflow-hidden p-2 sm:p-4 lg:block">
+      <div
+        id="radar-zoom"
+        role="group"
+        aria-label="Zoom del radar por cuadrante"
+        class="-mx-2 flex gap-2 overflow-x-auto px-2 pt-1 pb-3 lg:hidden"
+      >
+        {QUADRANTS.map((q, i) => (
+          <button
+            type="button"
+            data-quadrant={RADAR_POSITION[q.id]}
+            aria-pressed={i === 0 ? "true" : "false"}
+            class="min-h-11 shrink-0 rounded-full border border-slate-200 px-4 text-sm font-semibold whitespace-nowrap text-slate-700 transition-colors aria-pressed:border-brand-800 aria-pressed:bg-brand-800 aria-pressed:text-white dark:border-brand-800 dark:text-slate-300 dark:aria-pressed:border-accent-500 dark:aria-pressed:bg-accent-500 dark:aria-pressed:text-brand-950"
+          >
+            {TAB_LABEL[q.id]}
+          </button>
+        ))}
+        <button
+          type="button"
+          data-quadrant="full"
+          aria-pressed="false"
+          class="min-h-11 shrink-0 rounded-full border border-slate-200 px-4 text-sm font-semibold whitespace-nowrap text-slate-700 transition-colors aria-pressed:border-brand-800 aria-pressed:bg-brand-800 aria-pressed:text-white dark:border-brand-800 dark:text-slate-300 dark:aria-pressed:border-accent-500 dark:aria-pressed:bg-accent-500 dark:aria-pressed:text-brand-950"
+        >
+          Ver completo
+        </button>
+      </div>
       <svg id="radar" class="radar-svg mx-auto block h-auto w-full" aria-labelledby="radar-desc">
         <desc id="radar-desc">
           Gráfico del radar con {blips.length} ítems en cuatro cuadrantes y cuatro anillos. Los mismos datos
@@ -76,13 +117,17 @@ const TAB_LABEL: Record<QuadrantId, string> = {
         </desc>
       </svg>
       <figcaption class="mt-2 px-2 text-sm text-slate-600 dark:text-slate-400">
-        <span aria-hidden="true">★ nuevo · ▲ subió · ▼ bajó · ● sin cambios.</span> Pasa el cursor sobre un
-        punto para ver su nombre; haz clic para ir a su ficha. El detalle completo está más abajo.
+        <span aria-hidden="true">★ nuevo · ▲ subió · ▼ bajó · ● sin cambios.</span>{" "}
+        <span class="lg:hidden">Toca un punto para ver su ficha debajo del gráfico.</span>
+        <span class="hidden lg:inline">
+          Pasa el cursor sobre un punto para ver su nombre; haz clic para ir a su ficha en la tabla.
+        </span>
       </figcaption>
       <noscript>
         <p class="p-4">El gráfico necesita JavaScript. La lista de abajo tiene toda la información.</p>
       </noscript>
     </figure>
+    <div id="blip-ficha" class="card mt-4 lg:hidden" hidden aria-live="polite"></div>
   </section>
 
   <section class="container-page mt-12" aria-labelledby="tabla-h">
@@ -276,28 +321,36 @@ const TAB_LABEL: Record<QuadrantId, string> = {
   <script is:inline src="/vendor/d3-7.9.0.min.js"></script>
   <script is:inline src="/vendor/tech-radar/radar-0.12.js"></script>
   <script is:inline type="application/json" id="radar-config" set:html={JSON.stringify(radarConfig)} />
+  <script is:inline type="application/json" id="radar-blips" set:html={JSON.stringify(blipDetails)} />
   <script is:inline>
     (() => {
       const base = JSON.parse(document.getElementById("radar-config").textContent);
+      const blipDetails = JSON.parse(document.getElementById("radar-blips").textContent);
+      const detailByNum = new Map(blipDetails.map((d) => [d.num, d]));
       const svg = document.getElementById("radar");
       const desc = svg.querySelector("desc");
       const darkRings = ["#22c55e", "#3b82f6", "#d97706", "#ef4444"];
-      const wide = matchMedia("(min-width: 900px)");
+      const wide = matchMedia("(min-width: 1024px)");
+      const MOVED = { 2: "★ Nuevo", 1: "▲ Subió", "-1": "▼ Bajó" };
+
+      // Cuadrante enfocado en mobile (null = vista completa). Por defecto: Técnicas (índice 2 de radar.js).
+      let zoom = 2;
 
       function draw() {
         const dark = document.documentElement.classList.contains("dark");
         svg.replaceChildren(desc);
-        const layout = wide.matches;
-        const width = layout ? 1540 : 850;
-        const height = layout ? 1000 : 850;
-        radar_visualization({
+        const isWide = wide.matches;
+        const zoomed = !isWide && zoom !== null;
+        const width = isWide ? 1650 : 850;
+        const height = isWide ? 1050 : 850;
+        const config = {
           svg_id: "radar",
           width,
           height,
           title: "",
           date: "",
           font_family: "'Inter Variable', system-ui, sans-serif",
-          print_layout: layout,
+          print_layout: isWide || zoomed,
           links_in_new_tabs: false,
           colors: {
             background: "transparent",
@@ -307,10 +360,25 @@ const TAB_LABEL: Record<QuadrantId, string> = {
           quadrants: base.quadrants,
           rings: base.rings.map((r, i) => ({ ...r, color: dark ? darkRings[i] : r.color })),
           entries: base.entries.map((e) => ({ ...e })),
-        });
+        };
+        if (isWide) {
+          config.legend_column_width = 215;
+          config.legend_offset = [
+            { x: 450, y: 90 }, // 0: Frameworks (inf-der)
+            { x: -750, y: 90 }, // 1: Modelos (inf-izq)
+            { x: -750, y: -360 }, // 2: Técnicas (sup-izq)
+            { x: 450, y: -360 }, // 3: Herramientas (sup-der)
+          ];
+        }
+        if (zoomed) {
+          config.zoomed_quadrant = zoom;
+          config.blip_radius = 13;
+        }
+        radar_visualization(config);
         svg.removeAttribute("width");
         svg.removeAttribute("height");
-        svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+        // En modo zoom, radar.js ya fijó el viewBox del cuadrante.
+        if (!zoomed) svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
         for (const t of svg.querySelectorAll("text")) {
           if (t.textContent.includes("moved up")) t.remove();
         }
@@ -319,6 +387,64 @@ const TAB_LABEL: Record<QuadrantId, string> = {
       draw();
       window.addEventListener("themechange", draw);
       wide.addEventListener("change", draw);
+
+      // Selector de zoom por cuadrante (mobile)
+      const zoomBtns = [...document.querySelectorAll("#radar-zoom button")];
+      zoomBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          zoom = btn.dataset.quadrant === "full" ? null : Number(btn.dataset.quadrant);
+          zoomBtns.forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+          hideFicha();
+          draw();
+        });
+      });
+
+      // Ficha interactiva al tocar un blip (mobile)
+      const ficha = document.getElementById("blip-ficha");
+      const esc = (s) =>
+        String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+
+      function hideFicha() {
+        ficha.hidden = true;
+        ficha.replaceChildren();
+      }
+
+      function showFicha(info) {
+        const moved = MOVED[info.moved]
+          ? `<span class="font-medium text-slate-600 dark:text-slate-400">${MOVED[info.moved]}</span>`
+          : "";
+        const status =
+          info.status === "propuesta"
+            ? `<span class="rounded bg-accent-100 px-1.5 py-0.5 font-semibold text-accent-900">Propuesta</span>`
+            : `<span class="rounded bg-green-100 px-1.5 py-0.5 font-semibold text-green-900 dark:bg-green-950 dark:text-green-200">Votado</span>`;
+        const link = info.discussion
+          ? `<a class="link mt-3 inline-flex min-h-11 items-center text-sm" href="${esc(info.discussion)}">Ver hilo en Discord</a>`
+          : "";
+        ficha.innerHTML = `
+          <p class="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <span class="font-mono text-xs text-slate-500 dark:text-slate-400">${info.num}</span>
+            <span class="font-semibold text-brand-900 dark:text-white">${esc(info.name)}</span>
+            <span class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-2.5 py-1 text-xs font-semibold dark:border-brand-800">
+              <span class="size-2 rounded-full" style="background-color: ${esc(info.ringColor)}" aria-hidden="true"></span>
+              ${esc(info.ring)}
+            </span>
+          </p>
+          <p class="mt-2 text-sm text-slate-700 dark:text-slate-300">${esc(info.description)}</p>
+          <p class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs">${moved}${status}</p>
+          ${link}`;
+        ficha.hidden = false;
+      }
+
+      svg.addEventListener("click", (e) => {
+        if (wide.matches) return; // en desktop el clic navega a la tabla
+        const g = e.target.closest("g.blip");
+        if (!g) return;
+        const d = d3.select(g).datum();
+        const info = d && detailByNum.get(Number(d.id));
+        if (!info) return;
+        e.preventDefault();
+        showFicha(info);
+      });
 
       // Toggle del gráfico en mobile
       const toggle = document.getElementById("radar-chart-toggle");
