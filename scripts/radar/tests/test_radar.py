@@ -3,8 +3,8 @@ import copy
 import radar
 
 
-def test_radar_json_del_repo_es_valido(radar_data):
-    assert radar.validate(radar_data) == []
+def test_radar_json_del_repo_es_valido(repo_radar):
+    assert radar.validate(repo_radar) == []
 
 
 def test_slugify():

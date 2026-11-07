@@ -1,0 +1,149 @@
+{
+  "updated": "2026-11-04",
+  "entries": [
+    {
+      "id": "archivos-de-contexto",
+      "name": "Archivos de contexto del repo (CLAUDE.md, AGENTS.md)",
+      "quadrant": "tecnicas",
+      "ring": "adoptar",
+      "moved": 2,
+      "description": "Documentar stack, comandos y convenciones en un archivo que el agente lee siempre reduce errores repetidos y hace el trabajo reproducible entre personas. Barato y con retorno inmediato.",
+      "discussion": null,
+      "threadId": null,
+      "date": "2026-11-04",
+      "status": "propuesta"
+    },
+    {
+      "id": "spec-driven-development",
+      "name": "Desarrollo guiado por especificaciones",
+      "quadrant": "tecnicas",
+      "ring": "probar",
+      "moved": 2,
+      "description": "Escribir primero una especificación breve (objetivo, criterios de aceptación, límites) y pedir al agente que planifique antes de codificar. Mejora la calidad en tareas grandes; en cambios chicos puede ser burocracia.",
+      "discussion": null,
+      "threadId": null,
+      "date": "2026-11-04",
+      "status": "propuesta"
+    },
+    {
+      "id": "evals-de-agentes",
+      "name": "Evals para agentes y prompts",
+      "quadrant": "tecnicas",
+      "ring": "probar",
+      "moved": 2,
+      "description": "Casos de prueba automáticos que miden si un agente o prompt sigue haciendo lo correcto tras cambiar modelo, herramientas o instrucciones. Imprescindible en producción; todavía cuesta mantenerlos.",
+      "discussion": null,
+      "threadId": null,
+      "date": "2026-11-04",
+      "status": "propuesta"
+    },
+    {
+      "id": "permisos-sin-sandbox",
+      "name": "Agentes con permisos totales fuera de un sandbox",
+      "quadrant": "tecnicas",
+      "ring": "esperar",
+      "moved": 2,
+      "description": "Saltarse todas las confirmaciones en tu máquina o con credenciales reales expone a borrados, filtraciones e inyección de prompts. Si necesitas autonomía, usa contenedores, worktrees o entornos aislados.",
+      "discussion": null,
+      "threadId": null,
+      "date": "2026-11-04",
+      "status": "propuesta"
+    },
+    {
+      "id": "claude-agent-sdk",
+      "name": "Claude Agent SDK",
+      "quadrant": "frameworks",
+      "ring": "probar",
+      "moved": 2,
+      "description": "SDK (TypeScript y Python) con el mismo bucle de agente, herramientas y permisos que Claude Code. Buen punto de partida para agentes propios con acceso a archivos y comandos.",
+      "discussion": null,
+      "threadId": null,
+      "date": "2026-11-04",
+      "status": "propuesta"
+    },
+    {
+      "id": "openai-agents-sdk",
+      "name": "OpenAI Agents SDK",
+      "quadrant": "frameworks",
+      "ring": "evaluar",
+      "moved": 2,
+      "description": "Framework liviano con handoffs entre agentes, guardrails y trazas. Interesante para orquestaciones multiagente; falta experiencia de la comunidad en producción.",
+      "discussion": null,
+      "threadId": null,
+      "date": "2026-11-04",
+      "status": "propuesta"
+    },
+    {
+      "id": "langgraph",
+      "name": "LangGraph",
+      "quadrant": "frameworks",
+      "ring": "probar",
+      "moved": 2,
+      "description": "Modela agentes como grafos de estado con persistencia y pasos con intervención humana. Útil cuando el flujo debe ser explícito y auditable; agrega complejidad si el caso es simple.",
+      "discussion": null,
+      "threadId": null,
+      "date": "2026-11-04",
+      "status": "propuesta"
+    },
+    {
+      "id": "model-context-protocol",
+      "name": "Model Context Protocol (MCP)",
+      "quadrant": "herramientas",
+      "ring": "adoptar",
+      "moved": 2,
+      "description": "Protocolo abierto para conectar agentes con herramientas y datos. Amplio soporte en clientes y servidores; revisa permisos y origen de cada servidor antes de instalarlo.",
+      "discussion": null,
+      "threadId": null,
+      "date": "2026-11-04",
+      "status": "propuesta"
+    },
+    {
+      "id": "agentes-de-codigo-en-terminal",
+      "name": "Agentes de código en terminal",
+      "quadrant": "herramientas",
+      "ring": "adoptar",
+      "moved": 2,
+      "description": "Herramientas como Claude Code, Codex CLI o Gemini CLI que leen el repo, ejecutan comandos y proponen cambios. Ya son parte del flujo diario de muchos miembros; combínalas con revisión humana y CI.",
+      "discussion": null,
+      "threadId": null,
+      "date": "2026-11-04",
+      "status": "propuesta"
+    },
+    {
+      "id": "agent2agent",
+      "name": "Agent2Agent (A2A)",
+      "quadrant": "herramientas",
+      "ring": "evaluar",
+      "moved": 2,
+      "description": "Protocolo para que agentes de distintos proveedores se descubran y deleguen tareas entre sí. Promete interoperabilidad; el ecosistema y los casos reales aún son escasos.",
+      "discussion": null,
+      "threadId": null,
+      "date": "2026-11-04",
+      "status": "propuesta"
+    },
+    {
+      "id": "gateways-de-modelos",
+      "name": "Gateways de modelos (LiteLLM, OpenRouter)",
+      "quadrant": "modelos",
+      "ring": "probar",
+      "moved": 2,
+      "description": "Una sola API para varios proveedores y modelos, con control de costos, fallback y registro. Facilita comparar modelos; suma una dependencia y un intermediario para tus datos.",
+      "discussion": null,
+      "threadId": null,
+      "date": "2026-11-04",
+      "status": "propuesta"
+    },
+    {
+      "id": "modelos-abiertos-locales",
+      "name": "Modelos abiertos en local (Ollama, llama.cpp)",
+      "quadrant": "modelos",
+      "ring": "evaluar",
+      "moved": 2,
+      "description": "Correr modelos de pesos abiertos en tu equipo o servidor da privacidad y costo fijo. Sirven para tareas acotadas; en tareas agénticas largas todavía rinden menos que los modelos de frontera.",
+      "discussion": null,
+      "threadId": null,
+      "date": "2026-11-04",
+      "status": "propuesta"
+    }
+  ]
+}
