@@ -77,14 +77,14 @@ const TAB_LABEL: Record<QuadrantId, string> = {
       <button
         type="button"
         id="radar-chart-toggle"
-        aria-expanded="false"
+        aria-expanded="true"
         aria-controls="radar-chart"
         class="btn-secondary lg:hidden"
       >
-        Ver gráfico interactivo
+        Ocultar gráfico
       </button>
     </div>
-    <figure id="radar-chart" class="card mt-4 hidden overflow-hidden p-2 sm:p-4 lg:block">
+    <figure id="radar-chart" class="card mt-4 overflow-hidden p-2 sm:p-4">
       <div
         id="radar-zoom"
         role="group"
@@ -451,9 +451,11 @@ const TAB_LABEL: Record<QuadrantId, string> = {
       const chart = document.getElementById("radar-chart");
       if (toggle && chart) {
         toggle.addEventListener("click", () => {
-          const show = chart.classList.toggle("hidden") === false;
+          const isHidden = chart.classList.toggle("hidden");
+          const show = !isHidden;
           toggle.setAttribute("aria-expanded", String(show));
           toggle.textContent = show ? "Ocultar gráfico" : "Ver gráfico interactivo";
+          if (!show) hideFicha();
         });
       }
 
