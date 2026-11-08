@@ -7,10 +7,6 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   site: "https://agenticstack.cl",
   trailingSlash: "ignore",
-  server: {
-    host: true,
-    port: 4321,
-  },
   integrations: [mdx(), sitemap()],
   markdown: {
     shikiConfig: {
