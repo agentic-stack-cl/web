@@ -1,0 +1,13 @@
+# Agentic Stack Chile
+
+> Comunidad y stack de ingeniería de agentes de IA en Chile: eventos, recursos técnicos, arquitecturas agentic y proyectos open-source.
+
+## Secciones Principales
+
+- [Sitio Principal](https://agenticstack.cl/): Portal oficial de la comunidad Agentic Stack Chile.
+- [Repositorio Web](https://github.com/agentic-stack-cl/web): Código fuente del portal comunitario.
+
+## Capacidades para Agentes de IA
+
+- **Formato estándar**: Especificación `/llms.txt` compatible con rastreadores RAG, ChatGPT Search, Claude y Perplexity.
+- **Validación**: Generado conforme al estándar [llms.txt](https://ronanchnlps-bit.github.io/).
