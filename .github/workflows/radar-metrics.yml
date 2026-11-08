@@ -1,0 +1,76 @@
+name: Radar Metrics Weekly
+
+# Recolecta semanalmente métricas de vitalidad comunitaria (GitHub, npm, PyPI)
+# y nivel de seguridad (OpenSSF Scorecard, OSV.dev CVEs, cadencia de releases).
+# Actualiza src/data/radar-metrics.json y abre un PR en la rama radar/metrics.
+
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Todos los lunes a las 06:00 UTC (03:00 CLT)
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Solo mostrar métricas recolectadas sin abrir PR"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+concurrency:
+  group: radar-metrics
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Recolectar métricas
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 scripts/radar/metrics.py \
+            --sources src/data/radar-sources.json \
+            --out src/data/radar-metrics.json \
+            ${{ inputs.dry_run && '--dry-run' || '' }}
+
+      - name: Preparar descripción del PR
+        if: "!inputs.dry_run"
+        run: |
+          cat << 'EOF' > "$RUNNER_TEMP/pr-body.md"
+          ## Resumen semanal de métricas del Radar
+
+          Actualización automática de telemetría para las tecnologías del radar:
+          - **Vitalidad comunitaria**: estrellas GitHub, forks, descargas mensuales (npm/PyPI) y tendencias.
+          - **Nivel de seguridad y mantenimiento**: OpenSSF Scorecard, CVEs activos en OSV.dev, cadencia de entregas y mantenedores activos.
+
+          *Generado automáticamente por el workflow `radar-metrics.yml`.*
+          EOF
+
+      - name: Abrir o actualizar PR
+        id: cpr
+        if: "!inputs.dry_run"
+        uses: peter-evans/create-pull-request@v8
+        with:
+          branch: radar/metrics
+          delete-branch: true
+          commit-message: "feat(radar): actualiza métricas semanales de vitalidad y seguridad"
+          title: "radar: actualización semanal de métricas de comunidad y seguridad"
+          body-path: ${{ runner.temp }}/pr-body.md
+          labels: radar
+          add-paths: src/data/radar-metrics.json
+
+      - name: Ejecutar CI sobre el PR
+        if: steps.cpr.outputs.pull-request-head-sha != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run ci.yml --ref radar/metrics

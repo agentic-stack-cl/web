@@ -1,0 +1,100 @@
+---
+interface Props {
+  data: number[];
+  labels?: string[];
+  width?: number;
+  height?: number;
+  label?: string;
+}
+
+const { data = [], labels = [], width = 280, height = 64, label = "Evolución histórica" } = Astro.props;
+
+const hasData = data && data.length >= 2;
+const min = hasData ? Math.min(...data) : 0;
+const max = hasData ? Math.max(...data) : 1;
+const range = max - min || 1;
+
+const padding = 6;
+const innerWidth = width - padding * 2;
+const innerHeight = height - padding * 2;
+
+const points = hasData
+  ? data.map((val, idx) => {
+      const x = padding + (idx / (data.length - 1)) * innerWidth;
+      const y = height - padding - ((val - min) / range) * innerHeight;
+      return { x, y, val, label: labels[idx] ?? `Punto ${idx + 1}` };
+    })
+  : [];
+
+const pathD =
+  points.length > 0
+    ? points.reduce((acc, p, i) => `${acc} ${i === 0 ? "M" : "L"} ${p.x.toFixed(1)},${p.y.toFixed(1)}`, "")
+    : "";
+const areaD =
+  points.length > 0
+    ? `${pathD} L ${points[points.length - 1].x.toFixed(1)},${height - padding} L ${points[0].x.toFixed(1)},${height - padding} Z`
+    : "";
+
+const startVal = data[0] ?? 0;
+const endVal = data[data.length - 1] ?? 0;
+const diff = endVal - startVal;
+const growth = startVal > 0 ? ((diff / startVal) * 100).toFixed(0) : "+0";
+---
+
+<div class="space-y-1.5" role="region" aria-label={label}>
+  <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+    <span>{label}</span>
+    {hasData && (
+      <span class="font-mono text-slate-700 dark:text-slate-300">
+        {diff >= 0 ? `+${diff.toLocaleString("es-CL")}` : diff.toLocaleString("es-CL")} (
+        {diff >= 0 ? `+${growth}%` : `${growth}%`})
+      </span>
+    )}
+  </div>
+
+  {hasData ? (
+    <svg viewBox={`0 0 ${width} ${height}`} class="h-16 w-full overflow-visible" aria-hidden="true">
+      <defs>
+        <linearGradient id="sparkline-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="currentColor" stop-opacity="0.25" />
+          <stop offset="100%" stop-color="currentColor" stop-opacity="0.0" />
+        </linearGradient>
+      </defs>
+
+      {/* Área suave bajo la curva */}
+      <path d={areaD} fill="url(#sparkline-grad)" class="text-brand-700 dark:text-accent-400" />
+
+      {/* Línea principal */}
+      <path
+        d={pathD}
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="text-brand-800 dark:text-accent-400"
+      />
+
+      {/* Punto final destacado */}
+      {points.length > 0 && (
+        <circle
+          cx={points[points.length - 1].x}
+          cy={points[points.length - 1].y}
+          r="3.5"
+          class="fill-brand-900 stroke-white stroke-2 dark:fill-accent-400 dark:stroke-brand-950"
+        />
+      )}
+    </svg>
+  ) : (
+    <div class="flex h-12 items-center justify-center rounded border border-dashed border-slate-200 text-xs text-slate-400 dark:border-brand-900 dark:text-slate-500">
+      Sin serie histórica suficiente
+    </div>
+  )}
+
+  {hasData && labels.length >= 2 && (
+    <div class="flex justify-between font-mono text-[10px] text-slate-600 dark:text-slate-400">
+      <span>{labels[0]}</span>
+      <span>{labels[labels.length - 1]}</span>
+    </div>
+  )}
+</div>

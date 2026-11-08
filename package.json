@@ -18,6 +18,7 @@
     "links": "node scripts/check-links.mjs dist",
     "radar:validate": "python3 scripts/radar/validate.py src/data/radar.json",
     "radar:sync": "python3 scripts/radar/sync.py",
+    "radar:metrics": "python3 scripts/radar/metrics.py",
     "test:py": "uvx pytest -q",
     "lint:py": "uvx ruff check scripts && uvx ruff format --check scripts",
     "prepare": "lefthook install || true"

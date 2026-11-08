@@ -1,10 +1,12 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import PageHeader from "@/components/PageHeader.astro";
+import RadarDrawer from "@/components/RadarDrawer.astro";
 import { getCollection } from "astro:content";
-import { QUADRANTS, RINGS, MOVED_LABEL, ring as ringOf, type QuadrantId } from "@/lib/radar";
+import { QUADRANTS, RINGS, MOVED_LABEL, ring as ringOf, quadrantName, type QuadrantId } from "@/lib/radar";
 import { numberBlips, radarQuadrants, toRadarEntries, RADAR_POSITION } from "@/lib/radar-layout";
 import { formatDate } from "@/lib/blog";
+import { getMetricsFor, getShieldTierInfo, formatCompactNumber } from "@/lib/radar-metrics";
 import radarData from "@/data/radar.json";
 
 const blips = await getCollection("radar");
@@ -42,6 +44,27 @@ const TAB_LABEL: Record<QuadrantId, string> = {
   herramientas: "Herramientas",
   modelos: "Modelos",
 };
+
+const blipsStore = Object.fromEntries(
+  blips.map((b) => {
+    const r = ringOf(b.data.ring);
+    const metrics = getMetricsFor(b.id);
+    return [
+      b.id,
+      {
+        id: b.id,
+        name: b.data.name,
+        quadrantName: quadrantName(b.data.quadrant),
+        ringName: r.name,
+        ringColor: r.color,
+        description: b.data.description,
+        discussion: b.data.discussion ?? null,
+        status: b.data.status,
+        metrics,
+      },
+    ];
+  }),
+);
 ---
 
 <BaseLayout
@@ -230,6 +253,44 @@ const TAB_LABEL: Record<QuadrantId, string> = {
                         </a>
                       )}
                     </div>
+                    {/* Barra de salud y botón de ficha */}
+                    <div class="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3 dark:border-brand-900/60">
+                      <div class="flex flex-wrap items-center gap-2">
+                        {(() => {
+                          const m = getMetricsFor(b.id);
+                          const t = getShieldTierInfo(m);
+                          const c = m?.community;
+                          return (
+                            <>
+                              <span
+                                class={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-semibold ${t.badgeClass}`}
+                              >
+                                <span class="font-mono text-[10px]">{t.meter}</span>
+                                <span>{t.label}</span>
+                              </span>
+                              {c?.stars !== undefined && (
+                                <span class="font-mono text-xs text-slate-600 dark:text-slate-400">
+                                  ⭐ {formatCompactNumber(c.stars)}
+                                </span>
+                              )}
+                              {c?.monthly_downloads !== undefined && (
+                                <span class="font-mono text-xs text-slate-600 dark:text-slate-400">
+                                  📦 {formatCompactNumber(c.monthly_downloads)}/m
+                                </span>
+                              )}
+                            </>
+                          );
+                        })()}
+                      </div>
+                      <button
+                        type="button"
+                        data-open-drawer={b.id}
+                        class="btn-secondary inline-flex cursor-pointer items-center gap-1 px-2.5 py-1 text-xs"
+                      >
+                        <span>Ficha</span>
+                        <span aria-hidden="true">→</span>
+                      </button>
+                    </div>
                   </li>
                 );
               })}
@@ -261,11 +322,14 @@ const TAB_LABEL: Record<QuadrantId, string> = {
                     <th scope="col" class="px-3 py-2 font-semibold">
                       Ítem
                     </th>
-                    <th scope="col" class="w-32 px-3 py-2 font-semibold">
+                    <th scope="col" class="w-28 px-3 py-2 font-semibold">
                       Anillo
                     </th>
-                    <th scope="col" class="w-36 px-3 py-2 font-semibold">
+                    <th scope="col" class="w-32 px-3 py-2 font-semibold">
                       Estado
+                    </th>
+                    <th scope="col" class="w-48 px-3 py-2 font-semibold">
+                      Salud & Comunidad
                     </th>
                   </tr>
                 </thead>
@@ -281,7 +345,13 @@ const TAB_LABEL: Record<QuadrantId, string> = {
                           {numbers.get(b.id)}
                         </td>
                         <th scope="row" class="px-3 py-3 font-normal">
-                          <span class="font-semibold text-brand-900 dark:text-white">{b.data.name}</span>
+                          <button
+                            type="button"
+                            data-open-drawer={b.id}
+                            class="cursor-pointer text-left font-semibold text-brand-900 hover:underline dark:text-white"
+                          >
+                            {b.data.name}
+                          </button>
                           <p class="mt-1 text-slate-700 dark:text-slate-300">{b.data.description}</p>
                         </th>
                         <td class="px-3 py-3 whitespace-nowrap">
@@ -308,6 +378,44 @@ const TAB_LABEL: Record<QuadrantId, string> = {
                               Hilo en Discord<span class="sr-only"> sobre {b.data.name}</span>
                             </a>
                           )}
+                        </td>
+                        <td class="px-3 py-3">
+                          {(() => {
+                            const m = getMetricsFor(b.id);
+                            const t = getShieldTierInfo(m);
+                            const c = m?.community;
+                            return (
+                              <div class="space-y-1.5">
+                                <div class="flex items-center gap-1.5">
+                                  <span
+                                    class={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-semibold ${t.badgeClass}`}
+                                  >
+                                    <span class="font-mono text-[10px]">{t.meter}</span>
+                                    <span>{t.label}</span>
+                                  </span>
+                                </div>
+                                {c && (c.stars !== undefined || c.monthly_downloads !== undefined) && (
+                                  <p class="font-mono text-xs text-slate-600 dark:text-slate-400">
+                                    {c.stars !== undefined && <span>⭐ {formatCompactNumber(c.stars)}</span>}
+                                    {c.stars !== undefined && c.monthly_downloads !== undefined && (
+                                      <span> · </span>
+                                    )}
+                                    {c.monthly_downloads !== undefined && (
+                                      <span>📦 {formatCompactNumber(c.monthly_downloads)}/m</span>
+                                    )}
+                                  </p>
+                                )}
+                                <button
+                                  type="button"
+                                  data-open-drawer={b.id}
+                                  class="link inline-flex cursor-pointer items-center gap-1 text-xs font-medium"
+                                >
+                                  <span>Ver ficha</span>
+                                  <span aria-hidden="true">→</span>
+                                </button>
+                              </div>
+                            );
+                          })()}
                         </td>
                       </tr>
                     );
@@ -539,6 +647,9 @@ const TAB_LABEL: Record<QuadrantId, string> = {
       window.addEventListener("hashchange", syncFromHash);
     })();
   </script>
+
+  <script id="radar-data-store" type="application/json" set:html={JSON.stringify(blipsStore)} />
+  <RadarDrawer />
 </BaseLayout>
 
 <style is:global>

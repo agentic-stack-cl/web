@@ -1,0 +1,242 @@
+{
+  "updated": "2026-11-08T12:00:00Z",
+  "entries": {
+    "aider": {
+      "kind": "oss",
+      "community": {
+        "stars": 28450,
+        "forks": 2720,
+        "monthly_downloads": 185000,
+        "issues_closed_ratio": 0.88,
+        "history": {
+          "timestamps": ["2026-06", "2026-07", "2026-08", "2026-09", "2026-10", "2026-11"],
+          "stars": [19500, 21200, 23100, 25000, 26900, 28450],
+          "downloads": [95000, 110000, 132000, 154000, 172000, 185000]
+        }
+      },
+      "security": {
+        "tier": "tier-a",
+        "tier_label": "Blindaje Alto",
+        "openssf_score": 7.4,
+        "days_since_last_release": 5,
+        "releases_last_year": 42,
+        "active_maintainers_6m": 4,
+        "open_cves": 0,
+        "cves_detail": [],
+        "license": {
+          "spdx": "Apache-2.0",
+          "type": "permissive"
+        },
+        "checks": {
+          "branch_protection": true,
+          "code_review": true,
+          "pinned_dependencies": true
+        }
+      }
+    },
+    "langgraph": {
+      "kind": "oss",
+      "community": {
+        "stars": 12800,
+        "forks": 1540,
+        "monthly_downloads": 820000,
+        "issues_closed_ratio": 0.82,
+        "history": {
+          "timestamps": ["2026-06", "2026-07", "2026-08", "2026-09", "2026-10", "2026-11"],
+          "stars": [7200, 8400, 9600, 10800, 11900, 12800],
+          "downloads": [340000, 420000, 520000, 640000, 740000, 820000]
+        }
+      },
+      "security": {
+        "tier": "tier-a",
+        "tier_label": "Blindaje Alto",
+        "openssf_score": 7.1,
+        "days_since_last_release": 4,
+        "releases_last_year": 58,
+        "active_maintainers_6m": 8,
+        "open_cves": 0,
+        "cves_detail": [],
+        "license": {
+          "spdx": "MIT",
+          "type": "permissive"
+        },
+        "checks": {
+          "branch_protection": true,
+          "code_review": true,
+          "pinned_dependencies": false
+        }
+      }
+    },
+    "pydantic-ai": {
+      "kind": "oss",
+      "community": {
+        "stars": 8600,
+        "forks": 620,
+        "monthly_downloads": 240000,
+        "issues_closed_ratio": 0.91,
+        "history": {
+          "timestamps": ["2026-07", "2026-08", "2026-09", "2026-10", "2026-11"],
+          "stars": [2100, 3900, 5600, 7200, 8600],
+          "downloads": [30000, 75000, 130000, 190000, 240000]
+        }
+      },
+      "security": {
+        "tier": "tier-a",
+        "tier_label": "Blindaje Alto",
+        "openssf_score": 7.8,
+        "days_since_last_release": 3,
+        "releases_last_year": 26,
+        "active_maintainers_6m": 3,
+        "open_cves": 0,
+        "cves_detail": [],
+        "license": {
+          "spdx": "MIT",
+          "type": "permissive"
+        },
+        "checks": {
+          "branch_protection": true,
+          "code_review": true,
+          "pinned_dependencies": true
+        }
+      }
+    },
+    "dspy": {
+      "kind": "oss",
+      "community": {
+        "stars": 23100,
+        "forks": 1950,
+        "monthly_downloads": 145000,
+        "issues_closed_ratio": 0.74,
+        "history": {
+          "timestamps": ["2026-06", "2026-07", "2026-08", "2026-09", "2026-10", "2026-11"],
+          "stars": [14000, 16200, 18500, 20100, 21800, 23100],
+          "downloads": [80000, 95000, 110000, 125000, 135000, 145000]
+        }
+      },
+      "security": {
+        "tier": "tier-b",
+        "tier_label": "Blindaje Medio",
+        "openssf_score": 5.8,
+        "days_since_last_release": 22,
+        "releases_last_year": 18,
+        "active_maintainers_6m": 5,
+        "open_cves": 0,
+        "cves_detail": [],
+        "license": {
+          "spdx": "MIT",
+          "type": "permissive"
+        },
+        "checks": {
+          "branch_protection": false,
+          "code_review": true,
+          "pinned_dependencies": false
+        }
+      }
+    },
+    "crewai": {
+      "kind": "oss",
+      "community": {
+        "stars": 24900,
+        "forks": 3400,
+        "monthly_downloads": 310000,
+        "issues_closed_ratio": 0.76,
+        "history": {
+          "timestamps": ["2026-06", "2026-07", "2026-08", "2026-09", "2026-10", "2026-11"],
+          "stars": [17000, 19200, 21000, 22600, 23900, 24900],
+          "downloads": [180000, 210000, 245000, 275000, 295000, 310000]
+        }
+      },
+      "security": {
+        "tier": "tier-b",
+        "tier_label": "Blindaje Medio",
+        "openssf_score": 5.2,
+        "days_since_last_release": 12,
+        "releases_last_year": 34,
+        "active_maintainers_6m": 4,
+        "open_cves": 0,
+        "cves_detail": [],
+        "license": {
+          "spdx": "MIT",
+          "type": "permissive"
+        },
+        "checks": {
+          "branch_protection": false,
+          "code_review": true,
+          "pinned_dependencies": false
+        }
+      }
+    },
+    "model-context-protocol": {
+      "kind": "oss",
+      "community": {
+        "stars": 16500,
+        "forks": 1420,
+        "monthly_downloads": 480000,
+        "issues_closed_ratio": 0.89,
+        "history": {
+          "timestamps": ["2026-06", "2026-07", "2026-08", "2026-09", "2026-10", "2026-11"],
+          "stars": [4500, 7200, 10100, 12800, 14900, 16500],
+          "downloads": [85000, 160000, 250000, 340000, 420000, 480000]
+        }
+      },
+      "security": {
+        "tier": "tier-a",
+        "tier_label": "Blindaje Alto",
+        "openssf_score": 7.6,
+        "days_since_last_release": 7,
+        "releases_last_year": 24,
+        "active_maintainers_6m": 6,
+        "open_cves": 0,
+        "cves_detail": [],
+        "license": {
+          "spdx": "MIT",
+          "type": "permissive"
+        },
+        "checks": {
+          "branch_protection": true,
+          "code_review": true,
+          "pinned_dependencies": true
+        }
+      }
+    },
+    "claude-code": {
+      "kind": "proprietary",
+      "community": {
+        "monthly_downloads": 320000,
+        "history": {
+          "timestamps": ["2026-06", "2026-07", "2026-08", "2026-09", "2026-10", "2026-11"],
+          "downloads": [60000, 110000, 175000, 230000, 280000, 320000]
+        }
+      },
+      "security": {
+        "tier": "enterprise",
+        "tier_label": "Certificado Corporativo",
+        "certifications": ["SOC 2 Type II", "ISO 27001", "Zero Data Retention (ZDR)"],
+        "security_url": "https://trust.anthropic.com/"
+      }
+    },
+    "openai-codex-cli": {
+      "kind": "proprietary",
+      "security": {
+        "tier": "enterprise",
+        "tier_label": "Certificado Corporativo",
+        "certifications": ["SOC 2 Type II", "ISO 27001"],
+        "security_url": "https://trust.openai.com/"
+      }
+    },
+    "spec-driven-development": {
+      "kind": "pattern",
+      "security": {
+        "tier": "pattern",
+        "tier_label": "Práctica / Patrón"
+      }
+    },
+    "archivos-de-contexto": {
+      "kind": "pattern",
+      "security": {
+        "tier": "pattern",
+        "tier_label": "Práctica / Patrón"
+      }
+    }
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "$comment": "Catálogo de fuentes declarativas para el recolector de métricas (scripts/radar/metrics.py)",
+  "sources": {
+    "aider": {
+      "kind": "oss",
+      "github": "paul-gauthier/aider",
+      "pypi": "aider-chat",
+      "license": "Apache-2.0"
+    },
+    "langgraph": {
+      "kind": "oss",
+      "github": "langchain-ai/langgraph",
+      "pypi": "langgraph",
+      "npm": "@langchain/langgraph",
+      "license": "MIT"
+    },
+    "pydantic-ai": {
+      "kind": "oss",
+      "github": "pydantic/pydantic-ai",
+      "pypi": "pydantic-ai",
+      "license": "MIT"
+    },
+    "dspy": {
+      "kind": "oss",
+      "github": "stanfordnlp/dspy",
+      "pypi": "dspy-ai",
+      "license": "MIT"
+    },
+    "crewai": {
+      "kind": "oss",
+      "github": "crewAIInc/crewAI",
+      "pypi": "crewai",
+      "license": "MIT"
+    },
+    "model-context-protocol": {
+      "kind": "oss",
+      "github": "modelcontextprotocol/specification",
+      "npm": "@modelcontextprotocol/sdk",
+      "pypi": "mcp",
+      "license": "MIT"
+    },
+    "gateways-de-modelos": {
+      "kind": "oss",
+      "github": "BerriAI/litellm",
+      "pypi": "litellm",
+      "license": "MIT"
+    },
+    "modelos-abiertos-locales": {
+      "kind": "oss",
+      "github": "ollama/ollama",
+      "license": "MIT"
+    },
+    "opencode": {
+      "kind": "oss",
+      "github": "sst/opencode",
+      "license": "MIT"
+    },
+    "paperclip": {
+      "kind": "oss",
+      "github": "paperclip-ai/paperclip",
+      "license": "MIT"
+    },
+    "github-spec-kit": {
+      "kind": "oss",
+      "github": "github/spec-kit",
+      "license": "MIT"
+    },
+    "openspec": {
+      "kind": "oss",
+      "github": "openspec/openspec",
+      "license": "MIT"
+    },
+    "openai-agents-sdk": {
+      "kind": "oss",
+      "github": "openai/openai-agents-python",
+      "pypi": "openai-agents",
+      "license": "Apache-2.0"
+    },
+    "claude-agent-sdk": {
+      "kind": "oss",
+      "github": "anthropics/anthropic-sdk-typescript",
+      "npm": "@anthropic-ai/sdk",
+      "pypi": "anthropic",
+      "license": "MIT"
+    },
+    "claude-code": {
+      "kind": "proprietary",
+      "npm": "@anthropic-ai/claude-code",
+      "certifications": ["SOC 2 Type II", "ISO 27001", "Zero Data Retention (ZDR)"],
+      "security_url": "https://trust.anthropic.com/"
+    },
+    "openai-codex-cli": {
+      "kind": "proprietary",
+      "certifications": ["SOC 2 Type II", "ISO 27001"],
+      "security_url": "https://trust.openai.com/"
+    },
+    "archivos-de-contexto": {
+      "kind": "pattern"
+    },
+    "spec-driven-development": {
+      "kind": "pattern"
+    },
+    "evals-de-agentes": {
+      "kind": "pattern"
+    },
+    "permisos-sin-sandbox": {
+      "kind": "pattern"
+    },
+    "agentes-de-codigo-en-terminal": {
+      "kind": "pattern"
+    },
+    "agent2agent": {
+      "kind": "pattern"
+    },
+    "issues-listos-para-agentes-definition-of-ready": {
+      "kind": "pattern"
+    },
+    "superpowers": {
+      "kind": "pattern"
+    },
+    "bmad-method": {
+      "kind": "pattern"
+    }
+  }
+}

@@ -1,0 +1,775 @@
+---
+// Componente de Ficha Lateral / Modal Expandible para el Radar Tecnológico
+---
+
+<div
+  id="radar-drawer-root"
+  class="pointer-events-none fixed inset-0 z-50 flex justify-end opacity-0 transition-opacity duration-200"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="drawer-blip-title"
+  aria-hidden="true"
+>
+  {/* Backdrop difuminado */}
+  <div
+    id="radar-drawer-backdrop"
+    class="fixed inset-0 bg-slate-950/40 backdrop-blur-xs transition-opacity"
+  ></div>
+
+  {/* Panel lateral deslizante */}
+  <aside
+    id="radar-drawer-panel"
+    class="relative z-10 flex h-full w-full max-w-xl translate-x-full flex-col border-l border-slate-200 bg-white shadow-2xl transition-transform duration-300 ease-out dark:border-brand-900 dark:bg-brand-950"
+  >
+    {/* Cabecera del Drawer */}
+    <header class="flex items-start justify-between border-b border-slate-200 px-6 py-4 dark:border-brand-900">
+      <div class="space-y-1">
+        <div class="flex flex-wrap items-center gap-2">
+          <span
+            id="drawer-quadrant-badge"
+            class="text-xs font-semibold tracking-wide text-slate-500 uppercase dark:text-slate-400"
+          >
+            Cuadrante
+          </span>
+          <span class="text-slate-300 dark:text-brand-800">·</span>
+          <span
+            id="drawer-ring-badge"
+            class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-2.5 py-0.5 text-xs font-semibold dark:border-brand-800"
+          >
+            <span id="drawer-ring-dot" class="size-2 rounded-full" aria-hidden="true"></span>
+            <span id="drawer-ring-name">Anillo</span>
+          </span>
+          <span
+            id="drawer-license-badge"
+            class="hidden rounded bg-slate-100 px-2 py-0.5 font-mono text-xs text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+          >
+            MIT
+          </span>
+        </div>
+        <h2 id="drawer-blip-title" class="text-xl font-bold text-brand-900 dark:text-white">
+          Nombre del ítem
+        </h2>
+      </div>
+
+      <button
+        type="button"
+        id="radar-drawer-close"
+        class="inline-flex size-9 items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:border-brand-800 dark:text-slate-400 dark:hover:bg-brand-900 dark:hover:text-white"
+        aria-label="Cerrar ficha"
+      >
+        <svg
+          class="size-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </header>
+
+    {/* Contenido scrolleable */}
+    <div class="flex-1 space-y-6 overflow-y-auto px-6 py-5">
+      {/* Descripción general */}
+      <section aria-labelledby="desc-heading">
+        <h3 id="desc-heading" class="sr-only">
+          Descripción
+        </h3>
+        <p id="drawer-blip-desc" class="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+          Descripción del blip.
+        </p>
+      </section>
+
+      {/* Bloque: Vitalidad y Comunidad */}
+      <section
+        id="drawer-community-section"
+        class="space-y-3 rounded-xl border border-slate-200 bg-slate-50/70 p-4 dark:border-brand-900 dark:bg-brand-900/30"
+        aria-labelledby="comm-heading"
+      >
+        <div class="flex items-center justify-between">
+          <h3 id="comm-heading" class="text-sm font-semibold text-brand-900 dark:text-white">
+            Vitalidad y Comunidad
+          </h3>
+          <span
+            id="drawer-kind-badge"
+            class="text-[11px] font-medium text-slate-500 uppercase dark:text-slate-400"
+          >
+            Código Abierto
+          </span>
+        </div>
+
+        {/* Rejilla de métricas principales */}
+        <div id="drawer-community-stats" class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          <div class="rounded-lg border border-slate-200/80 bg-white p-2.5 dark:border-brand-800/80 dark:bg-brand-950">
+            <span class="block text-[11px] text-slate-500 dark:text-slate-400">Estrellas GitHub</span>
+            <span id="drawer-stat-stars" class="font-mono text-base font-bold text-slate-900 dark:text-white">
+              —
+            </span>
+          </div>
+          <div class="rounded-lg border border-slate-200/80 bg-white p-2.5 dark:border-brand-800/80 dark:bg-brand-950">
+            <span class="block text-[11px] text-slate-500 dark:text-slate-400">Forks</span>
+            <span id="drawer-stat-forks" class="font-mono text-base font-bold text-slate-900 dark:text-white">
+              —
+            </span>
+          </div>
+          <div class="rounded-lg border border-slate-200/80 bg-white p-2.5 dark:border-brand-800/80 dark:bg-brand-950">
+            <span class="block text-[11px] text-slate-500 dark:text-slate-400">Descargas / mes</span>
+            <span
+              id="drawer-stat-downloads"
+              class="font-mono text-base font-bold text-slate-900 dark:text-white"
+            >
+              —
+            </span>
+          </div>
+          <div
+            id="drawer-stat-issues-container"
+            class="col-span-2 rounded-lg border border-slate-200/80 bg-white p-2.5 sm:col-span-3 dark:border-brand-800/80 dark:bg-brand-950"
+          >
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] text-slate-500 dark:text-slate-400">Tasa de resolución de issues</span>
+              <span
+                id="drawer-stat-issues"
+                class="font-mono text-xs font-semibold text-slate-800 dark:text-slate-200"
+              >
+                —
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Gráfico temporal / Sparkline */}
+        <div
+          id="drawer-sparkline-container"
+          class="mt-3 rounded-lg border border-slate-200/80 bg-white p-3 dark:border-brand-800/80 dark:bg-brand-950"
+        >
+          <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+            <span>Tendencia histórica (meses)</span>
+            <span
+              id="drawer-sparkline-growth"
+              class="font-mono font-medium text-slate-700 dark:text-slate-300"
+            ></span>
+          </div>
+          <div id="drawer-sparkline-svg" class="mt-2 h-16 w-full"></div>
+          <div
+            id="drawer-sparkline-axis"
+            class="mt-1 flex justify-between font-mono text-[10px] text-slate-500 dark:text-slate-400"
+          ></div>
+        </div>
+
+        <div
+          id="drawer-community-empty"
+          class="hidden py-4 text-center text-xs text-slate-500 dark:text-slate-400"
+        >
+          No hay datos de distribución pública ni repositorio indexado.
+        </div>
+      </section>
+
+      {/* Bloque: Nivel de Seguridad y Mantenimiento */}
+      <section
+        id="drawer-security-section"
+        class="space-y-4 rounded-xl border border-slate-200 bg-slate-50/70 p-4 dark:border-brand-900 dark:bg-brand-900/30"
+        aria-labelledby="sec-heading"
+      >
+        <div class="flex items-center justify-between">
+          <h3 id="sec-heading" class="text-sm font-semibold text-brand-900 dark:text-white">
+            Nivel de Seguridad y Mantenimiento
+          </h3>
+          {/* Badge neutral de seguridad */}
+          <span
+            id="drawer-security-badge"
+            class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-semibold"
+          >
+            <span id="drawer-security-meter" class="font-mono text-[11px]"></span>
+            <span id="drawer-security-label">Blindaje</span>
+          </span>
+        </div>
+
+        {/* Detalle OpenSSF y CVEs para OSS */}
+        <div id="drawer-security-oss" class="space-y-3">
+          <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            <div class="rounded-lg border border-slate-200/80 bg-white p-2.5 dark:border-brand-800/80 dark:bg-brand-950">
+              <span class="block text-[11px] text-slate-500 dark:text-slate-400">OpenSSF Scorecard</span>
+              <span
+                id="drawer-stat-openssf"
+                class="font-mono text-base font-bold text-slate-900 dark:text-white"
+              >
+                —
+              </span>
+            </div>
+            <div class="rounded-lg border border-slate-200/80 bg-white p-2.5 dark:border-brand-800/80 dark:bg-brand-950">
+              <span class="block text-[11px] text-slate-500 dark:text-slate-400">Último release</span>
+              <span
+                id="drawer-stat-last-release"
+                class="font-mono text-base font-bold text-slate-900 dark:text-white"
+              >
+                —
+              </span>
+            </div>
+            <div class="rounded-lg border border-slate-200/80 bg-white p-2.5 dark:border-brand-800/80 dark:bg-brand-950">
+              <span class="block text-[11px] text-slate-500 dark:text-slate-400">Mantenedores activos</span>
+              <span
+                id="drawer-stat-maintainers"
+                class="font-mono text-base font-bold text-slate-900 dark:text-white"
+              >
+                —
+              </span>
+            </div>
+          </div>
+
+          {/* Estado de CVEs */}
+          <div
+            id="drawer-cves-box"
+            class="rounded-lg border border-slate-200/80 bg-white p-3 text-xs dark:border-brand-800/80 dark:bg-brand-950"
+          >
+            <div class="flex items-center justify-between">
+              <span class="font-semibold text-slate-800 dark:text-slate-200">Vulnerabilidades conocidas</span>
+              <span id="drawer-cves-status" class="font-mono font-medium">
+                0 activas
+              </span>
+            </div>
+            <ul id="drawer-cves-list" class="mt-2 hidden space-y-1 text-slate-600 dark:text-slate-400"></ul>
+          </div>
+
+          {/* Verificaciones de seguridad OpenSSF */}
+          <div class="rounded-lg border border-slate-200/80 bg-white p-3 dark:border-brand-800/80 dark:bg-brand-950">
+            <span class="block text-xs font-semibold text-slate-800 dark:text-slate-200">
+              Protecciones de cadena de suministro
+            </span>
+            <ul class="mt-2 grid grid-cols-1 gap-1.5 text-xs text-slate-600 sm:grid-cols-3 dark:text-slate-300">
+              <li id="drawer-check-branch" class="flex items-center gap-1.5">
+                <span class="font-mono text-slate-400">✓</span> Branch protection
+              </li>
+              <li id="drawer-check-review" class="flex items-center gap-1.5">
+                <span class="font-mono text-slate-400">✓</span> Code review
+              </li>
+              <li id="drawer-check-pinned" class="flex items-center gap-1.5">
+                <span class="font-mono text-slate-400">✓</span> Pinned dependencies
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Detalle para herramientas propietarias */}
+        <div id="drawer-security-proprietary" class="hidden space-y-3">
+          <p class="text-xs text-slate-600 dark:text-slate-400">
+            Tecnología o plataforma propietaria con infraestructura y controles auditados:
+          </p>
+          <div id="drawer-certs-container" class="flex flex-wrap gap-2"></div>
+          <div id="drawer-security-url-box" class="pt-1">
+            <a
+              id="drawer-security-link"
+              href="https://agenticstack.cl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="link text-xs"
+            >
+              Portal de confianza y seguridad →
+            </a>
+          </div>
+        </div>
+
+        {/* Detalle para patrones o técnicas */}
+        <div
+          id="drawer-security-pattern"
+          class="hidden py-2 text-xs text-slate-600 italic dark:text-slate-400"
+        >
+          Esta entrada representa una técnica, patrón de diseño o arquitectura. No contiene código
+          distribuible ni superficie de ataque de software ejecutable.
+        </div>
+
+        {/* Fallback si no hay telemetría aún */}
+        <div
+          id="drawer-security-empty"
+          class="hidden py-3 text-center text-xs text-slate-500 dark:text-slate-400"
+        >
+          Telemetría de seguridad en proceso de indexación.
+        </div>
+      </section>
+
+      {/* Enlace al foro de discusión */}
+      <section id="drawer-discussion-section" class="border-t border-slate-200 pt-4 dark:border-brand-900">
+        <a
+          id="drawer-discord-link"
+          href="https://discord.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-secondary flex w-full items-center justify-center gap-2 text-center text-sm"
+        >
+          <span>Participar en la votación en Discord</span>
+          <span aria-hidden="true">→</span>
+        </a>
+      </section>
+    </div>
+  </aside>
+</div>
+
+<script>
+  interface SparklineData {
+    timestamps: string[];
+    downloads?: number[];
+    stars?: number[];
+  }
+
+  interface BlipDrawerPayload {
+    id: string;
+    name: string;
+    quadrantName: string;
+    ringName: string;
+    ringColor: string;
+    description: string;
+    discussion: string | null;
+    status: string;
+    metrics: {
+      kind?: "oss" | "proprietary" | "pattern";
+      community?: {
+        stars?: number;
+        forks?: number;
+        monthly_downloads?: number;
+        issues_closed_ratio?: number;
+        history?: SparklineData;
+      };
+      security?: {
+        tier?: string;
+        tier_label?: string;
+        openssf_score?: number;
+        days_since_last_release?: number;
+        releases_last_year?: number;
+        active_maintainers_6m?: number;
+        open_cves?: number;
+        cves_detail?: Array<{ id: string; url?: string; summary?: string }>;
+        license?: { spdx?: string; type?: string };
+        checks?: {
+          branch_protection?: boolean;
+          code_review?: boolean;
+          pinned_dependencies?: boolean;
+        };
+        certifications?: string[];
+        security_url?: string;
+      };
+    } | null;
+  }
+
+  function formatNum(val: number | undefined | null): string {
+    if (val === undefined || val === null || isNaN(val)) return "—";
+    if (val >= 1_000_000) {
+      const f = (val / 1_000_000).toFixed(1);
+      return `${f.endsWith(".0") ? f.slice(0, -2) : f}M`;
+    }
+    if (val >= 1_000) {
+      const f = (val / 1_000).toFixed(1);
+      return `${f.endsWith(".0") ? f.slice(0, -2) : f}k`;
+    }
+    return val.toLocaleString("es-CL");
+  }
+
+  function renderSparklineSvg(history: SparklineData | undefined): {
+    svg: string;
+    growth: string;
+    startLabel: string;
+    endLabel: string;
+  } {
+    const rawValues = history?.downloads ?? history?.stars ?? [];
+    if (!rawValues || rawValues.length < 2) {
+      return { svg: "", growth: "", startLabel: "", endLabel: "" };
+    }
+
+    const min = Math.min(...rawValues);
+    const max = Math.max(...rawValues);
+    const range = max - min || 1;
+    const width = 340;
+    const height = 60;
+    const pad = 4;
+    const iw = width - pad * 2;
+    const ih = height - pad * 2;
+
+    const points = rawValues.map((v, i) => {
+      const x = pad + (i / (rawValues.length - 1)) * iw;
+      const y = height - pad - ((v - min) / range) * ih;
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    });
+
+    const pathD = points.reduce((acc, p, i) => `${acc} ${i === 0 ? "M" : "L"} ${p}`, "");
+    const lastX = (pad + iw).toFixed(1);
+    const firstX = pad.toFixed(1);
+    const bottomY = (height - pad).toFixed(1);
+    const areaD = `${pathD} L ${lastX},${bottomY} L ${firstX},${bottomY} Z`;
+
+    const startVal = rawValues[0] ?? 0;
+    const endVal = rawValues[rawValues.length - 1] ?? 0;
+    const diff = endVal - startVal;
+    const growth = startVal > 0 ? ((diff / startVal) * 100).toFixed(0) : "+0";
+    const growthLabel =
+      diff >= 0
+        ? `+${diff.toLocaleString("es-CL")} (+${growth}%)`
+        : `${diff.toLocaleString("es-CL")} (${growth}%)`;
+
+    const lastPoint = points[points.length - 1].split(",");
+    const svg = `
+      <svg viewBox="0 0 ${width} ${height}" class="h-14 w-full overflow-visible" aria-hidden="true">
+        <defs>
+          <linearGradient id="drawer-spark-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="currentColor" stop-opacity="0.28" />
+            <stop offset="100%" stop-color="currentColor" stop-opacity="0.0" />
+          </linearGradient>
+        </defs>
+        <path d="${areaD}" fill="url(#drawer-spark-grad)" class="text-brand-700 dark:text-accent-400" />
+        <path d="${pathD}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand-800 dark:text-accent-400" />
+        <circle cx="${lastPoint[0]}" cy="${lastPoint[1]}" r="3.5" class="fill-brand-900 stroke-white stroke-2 dark:fill-accent-400 dark:stroke-brand-950" />
+      </svg>
+    `;
+
+    const timestamps = history?.timestamps ?? [];
+    return {
+      svg,
+      growth: growthLabel,
+      startLabel: timestamps[0] ?? "",
+      endLabel: timestamps[timestamps.length - 1] ?? "",
+    };
+  }
+
+  function initRadarDrawer() {
+    const rootEl = document.getElementById("radar-drawer-root");
+    const panelEl = document.getElementById("radar-drawer-panel");
+    const backdropEl = document.getElementById("radar-drawer-backdrop");
+    const closeBtnEl = document.getElementById("radar-drawer-close");
+    const storeEl = document.getElementById("radar-data-store");
+
+    if (!rootEl || !panelEl || !backdropEl || !closeBtnEl || !storeEl) return;
+    const root: HTMLElement = rootEl;
+    const panel: HTMLElement = panelEl;
+    const backdrop: HTMLElement = backdropEl;
+    const closeBtn: HTMLElement = closeBtnEl;
+
+    let store: Record<string, BlipDrawerPayload> = {};
+    try {
+      store = JSON.parse(storeEl.textContent || "{}");
+    } catch {
+      return;
+    }
+
+    function openDrawer(blipId: string) {
+      const item = store[blipId];
+      if (!item) return;
+
+      // Actualizar cabecera
+      const titleEl = document.getElementById("drawer-blip-title");
+      const descEl = document.getElementById("drawer-blip-desc");
+      const quadEl = document.getElementById("drawer-quadrant-badge");
+      const ringDot = document.getElementById("drawer-ring-dot");
+      const ringName = document.getElementById("drawer-ring-name");
+      const licEl = document.getElementById("drawer-license-badge");
+
+      if (titleEl) titleEl.textContent = item.name;
+      if (descEl) descEl.textContent = item.description;
+      if (quadEl) quadEl.textContent = item.quadrantName;
+      if (ringDot) ringDot.style.backgroundColor = item.ringColor;
+      if (ringName) ringName.textContent = item.ringName;
+
+      const spdx = item.metrics?.security?.license?.spdx;
+      if (licEl) {
+        if (spdx) {
+          licEl.textContent = spdx;
+          licEl.classList.remove("hidden");
+        } else {
+          licEl.classList.add("hidden");
+        }
+      }
+
+      // Vitalidad y comunidad
+      const kind = item.metrics?.kind || (item.metrics?.security?.tier === "pattern" ? "pattern" : "oss");
+      const comm = item.metrics?.community;
+      const kindBadge = document.getElementById("drawer-kind-badge");
+      if (kindBadge) {
+        kindBadge.textContent =
+          kind === "oss"
+            ? "Código Abierto"
+            : kind === "proprietary"
+              ? "Propietario / SaaS"
+              : "Técnica / Patrón";
+      }
+
+      const starsEl = document.getElementById("drawer-stat-stars");
+      const forksEl = document.getElementById("drawer-stat-forks");
+      const downEl = document.getElementById("drawer-stat-downloads");
+      const issuesEl = document.getElementById("drawer-stat-issues");
+      const issuesCont = document.getElementById("drawer-stat-issues-container");
+      const sparkCont = document.getElementById("drawer-sparkline-container");
+      const sparkSvg = document.getElementById("drawer-sparkline-svg");
+      const sparkGrowth = document.getElementById("drawer-sparkline-growth");
+      const sparkAxis = document.getElementById("drawer-sparkline-axis");
+      const commStats = document.getElementById("drawer-community-stats");
+      const commEmpty = document.getElementById("drawer-community-empty");
+
+      if (comm && (comm.stars !== undefined || comm.monthly_downloads !== undefined)) {
+        if (commStats) commStats.classList.remove("hidden");
+        if (commEmpty) commEmpty.classList.add("hidden");
+
+        if (starsEl) starsEl.textContent = formatNum(comm.stars);
+        if (forksEl) forksEl.textContent = formatNum(comm.forks);
+        if (downEl) downEl.textContent = formatNum(comm.monthly_downloads);
+
+        if (issuesEl && issuesCont) {
+          if (comm.issues_closed_ratio !== undefined) {
+            issuesCont.classList.remove("hidden");
+            issuesEl.textContent = `${Math.round(comm.issues_closed_ratio * 100)}% resueltos`;
+          } else {
+            issuesCont.classList.add("hidden");
+          }
+        }
+
+        const spark = renderSparklineSvg(comm.history);
+        if (spark.svg && sparkCont && sparkSvg && sparkGrowth && sparkAxis) {
+          sparkCont.classList.remove("hidden");
+          sparkSvg.innerHTML = spark.svg;
+          sparkGrowth.textContent = spark.growth;
+          sparkAxis.innerHTML = `<span>${spark.startLabel}</span><span>${spark.endLabel}</span>`;
+        } else if (sparkCont) {
+          sparkCont.classList.add("hidden");
+        }
+      } else {
+        if (commStats) commStats.classList.add("hidden");
+        if (sparkCont) sparkCont.classList.add("hidden");
+        if (commEmpty) commEmpty.classList.remove("hidden");
+      }
+
+      // Seguridad y Mantenimiento
+      const sec = item.metrics?.security;
+      const tierBadge = document.getElementById("drawer-security-badge");
+      const tierMeter = document.getElementById("drawer-security-meter");
+      const tierLabel = document.getElementById("drawer-security-label");
+
+      const secOss = document.getElementById("drawer-security-oss");
+      const secProp = document.getElementById("drawer-security-proprietary");
+      const secPattern = document.getElementById("drawer-security-pattern");
+      const secEmpty = document.getElementById("drawer-security-empty");
+
+      // Configurar badge neutro
+      if (tierBadge && tierMeter && tierLabel) {
+        tierBadge.className =
+          "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-semibold";
+        if (kind === "pattern" || sec?.tier === "pattern") {
+          tierMeter.textContent = "—";
+          tierLabel.textContent = "Práctica / Patrón";
+          tierBadge.classList.add(
+            "border-slate-200",
+            "bg-slate-50/70",
+            "text-slate-500",
+            "italic",
+            "dark:border-brand-900",
+            "dark:bg-brand-950/70",
+            "dark:text-slate-400",
+          );
+        } else if (kind === "proprietary" || sec?.tier === "enterprise") {
+          tierMeter.textContent = "✓";
+          tierLabel.textContent = "Certificado";
+          tierBadge.classList.add(
+            "border-slate-300",
+            "bg-slate-100",
+            "text-slate-800",
+            "dark:border-slate-700",
+            "dark:bg-slate-800",
+            "dark:text-slate-100",
+          );
+        } else if (sec?.tier === "tier-a") {
+          tierMeter.textContent = "▰▰▰";
+          tierLabel.textContent = "Blindaje Alto";
+          tierBadge.classList.add(
+            "border-slate-300",
+            "bg-slate-100",
+            "text-slate-900",
+            "dark:border-slate-700",
+            "dark:bg-slate-800",
+            "dark:text-slate-100",
+          );
+        } else if (sec?.tier === "tier-b") {
+          tierMeter.textContent = "▰▰▱";
+          tierLabel.textContent = "Blindaje Medio";
+          tierBadge.classList.add(
+            "border-slate-200",
+            "bg-slate-50",
+            "text-slate-700",
+            "dark:border-brand-800",
+            "dark:bg-brand-900/60",
+            "dark:text-slate-300",
+          );
+        } else if (sec?.tier === "tier-c") {
+          tierMeter.textContent = "▰▱▱";
+          tierLabel.textContent = "Atención Requerida";
+          tierBadge.classList.add(
+            "border-dashed",
+            "border-slate-400",
+            "bg-slate-100",
+            "text-slate-800",
+            "dark:border-slate-600",
+            "dark:bg-slate-900",
+            "dark:text-slate-200",
+          );
+        } else {
+          tierMeter.textContent = "—";
+          tierLabel.textContent = "Sin telemetría";
+          tierBadge.classList.add(
+            "border-slate-200",
+            "bg-slate-50",
+            "text-slate-500",
+            "dark:border-brand-900",
+            "dark:bg-brand-950",
+            "dark:text-slate-400",
+          );
+        }
+      }
+
+      // Conmutar bloques según kind
+      if (secOss) secOss.classList.add("hidden");
+      if (secProp) secProp.classList.add("hidden");
+      if (secPattern) secPattern.classList.add("hidden");
+      if (secEmpty) secEmpty.classList.add("hidden");
+
+      if (kind === "pattern" || sec?.tier === "pattern") {
+        if (secPattern) secPattern.classList.remove("hidden");
+      } else if (kind === "proprietary" || sec?.tier === "enterprise") {
+        if (secProp) {
+          secProp.classList.remove("hidden");
+          const certsCont = document.getElementById("drawer-certs-container");
+          if (certsCont) {
+            certsCont.innerHTML = "";
+            (sec?.certifications || []).forEach((c) => {
+              const chip = document.createElement("span");
+              chip.className =
+                "inline-flex items-center gap-1 rounded border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-800 dark:border-brand-800 dark:bg-brand-950 dark:text-slate-200";
+              chip.textContent = `🏛️ ${c}`;
+              certsCont.appendChild(chip);
+            });
+          }
+          const linkBox = document.getElementById("drawer-security-url-box");
+          const secLink = document.getElementById("drawer-security-link") as HTMLAnchorElement | null;
+          if (linkBox && secLink) {
+            if (sec?.security_url) {
+              linkBox.classList.remove("hidden");
+              secLink.href = sec.security_url;
+            } else {
+              linkBox.classList.add("hidden");
+            }
+          }
+        }
+      } else if (sec) {
+        if (secOss) {
+          secOss.classList.remove("hidden");
+          const scoreEl = document.getElementById("drawer-stat-openssf");
+          const relEl = document.getElementById("drawer-stat-last-release");
+          const mainEl = document.getElementById("drawer-stat-maintainers");
+
+          if (scoreEl)
+            scoreEl.textContent =
+              sec.openssf_score !== undefined ? `${sec.openssf_score.toFixed(1)} / 10` : "—";
+          if (relEl)
+            relEl.textContent =
+              sec.days_since_last_release !== undefined ? `Hace ${sec.days_since_last_release}d` : "—";
+          if (mainEl)
+            mainEl.textContent =
+              sec.active_maintainers_6m !== undefined ? `${sec.active_maintainers_6m} personas` : "—";
+
+          const cvesStatus = document.getElementById("drawer-cves-status");
+          const cvesList = document.getElementById("drawer-cves-list");
+          if (cvesStatus && cvesList) {
+            const openCves = sec.open_cves ?? 0;
+            if (openCves === 0) {
+              cvesStatus.textContent = "0 activas (OSV)";
+              cvesStatus.className = "font-mono font-medium text-slate-700 dark:text-slate-300";
+              cvesList.classList.add("hidden");
+            } else {
+              cvesStatus.textContent = `${openCves} activa${openCves > 1 ? "s" : ""}`;
+              cvesStatus.className = "font-mono font-bold text-slate-900 dark:text-white";
+              cvesList.innerHTML = "";
+              (sec.cves_detail || []).forEach((cve) => {
+                const li = document.createElement("li");
+                li.innerHTML = cve.url
+                  ? `<a href="${cve.url}" target="_blank" rel="noopener noreferrer" class="link underline">${cve.id}</a>: ${cve.summary || "Vulnerabilidad reportada"}`
+                  : `<strong>${cve.id}</strong>: ${cve.summary || "Vulnerabilidad reportada"}`;
+                cvesList.appendChild(li);
+              });
+              cvesList.classList.remove("hidden");
+            }
+          }
+
+          // Checks OpenSSF
+          const setCheck = (id: string, ok: boolean | undefined) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.innerHTML = ok
+              ? `<span class="font-mono text-slate-800 dark:text-slate-200">✓</span> ${el.textContent?.replace(/^[✓✗—]\s*/, "")}`
+              : `<span class="font-mono text-slate-400">—</span> ${el.textContent?.replace(/^[✓✗—]\s*/, "")}`;
+          };
+          setCheck("drawer-check-branch", sec.checks?.branch_protection);
+          setCheck("drawer-check-review", sec.checks?.code_review);
+          setCheck("drawer-check-pinned", sec.checks?.pinned_dependencies);
+        }
+      } else {
+        if (secEmpty) secEmpty.classList.remove("hidden");
+      }
+
+      // Enlace a Discord
+      const discSection = document.getElementById("drawer-discussion-section");
+      const discLink = document.getElementById("drawer-discord-link") as HTMLAnchorElement | null;
+      if (discSection && discLink) {
+        if (item.discussion) {
+          discSection.classList.remove("hidden");
+          discLink.href = item.discussion;
+        } else {
+          discSection.classList.add("hidden");
+        }
+      }
+
+      // Animación de apertura
+      root.classList.remove("pointer-events-none", "opacity-0");
+      root.setAttribute("aria-hidden", "false");
+      panel.classList.remove("translate-x-full");
+      document.body.classList.add("overflow-hidden");
+      closeBtn.focus();
+    }
+
+    function closeDrawer() {
+      panel.classList.add("translate-x-full");
+      root.classList.add("opacity-0");
+      setTimeout(() => {
+        root.classList.add("pointer-events-none");
+        root.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("overflow-hidden");
+      }, 200);
+    }
+
+    closeBtn.addEventListener("click", closeDrawer);
+    backdrop.addEventListener("click", closeDrawer);
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && root.getAttribute("aria-hidden") === "false") {
+        closeDrawer();
+      }
+    });
+
+    // Delegación de eventos para botones "data-open-drawer"
+    document.addEventListener("click", (e) => {
+      const target = (e.target as HTMLElement).closest("[data-open-drawer]");
+      if (target) {
+        const id = target.getAttribute("data-open-drawer");
+        if (id) {
+          e.preventDefault();
+          openDrawer(id);
+        }
+      }
+    });
+
+    // Abrir automáticamente si hay hash #ficha-{id} en la URL
+    if (window.location.hash.startsWith("#ficha-")) {
+      const hashId = window.location.hash.replace("#ficha-", "");
+      if (store[hashId]) {
+        openDrawer(hashId);
+      }
+    }
+  }
+
+  // Inicializar al cargar y con View Transitions si existen
+  initRadarDrawer();
+  document.addEventListener("astro:page-load", initRadarDrawer);
+</script>
