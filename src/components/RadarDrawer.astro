@@ -430,6 +430,12 @@
   }
 
   function initRadarDrawer() {
+    // Prevenir listeners duplicados entre transiciones Astro (Alerta 3)
+    if ((window as unknown as { __radarDrawerInitialized?: boolean }).__radarDrawerInitialized) {
+      return;
+    }
+    (window as unknown as { __radarDrawerInitialized?: boolean }).__radarDrawerInitialized = true;
+
     const rootEl = document.getElementById("radar-drawer-root");
     const panelEl = document.getElementById("radar-drawer-panel");
     const backdropEl = document.getElementById("radar-drawer-backdrop");
@@ -441,6 +447,8 @@
     const panel: HTMLElement = panelEl;
     const backdrop: HTMLElement = backdropEl;
     const closeBtn: HTMLElement = closeBtnEl;
+
+    let lastActiveElement: HTMLElement | null = null;
 
     let store: Record<string, BlipDrawerPayload> = {};
     try {
@@ -684,9 +692,21 @@
               cvesList.innerHTML = "";
               (sec.cves_detail || []).forEach((cve) => {
                 const li = document.createElement("li");
-                li.innerHTML = cve.url
-                  ? `<a href="${cve.url}" target="_blank" rel="noopener noreferrer" class="link underline">${cve.id}</a>: ${cve.summary || "Vulnerabilidad reportada"}`
-                  : `<strong>${cve.id}</strong>: ${cve.summary || "Vulnerabilidad reportada"}`;
+                if (cve.url) {
+                  const a = document.createElement("a");
+                  a.href = cve.url;
+                  a.target = "_blank";
+                  a.rel = "noopener noreferrer";
+                  a.className = "link underline";
+                  a.textContent = cve.id;
+                  li.appendChild(a);
+                  li.appendChild(document.createTextNode(`: ${cve.summary || "Vulnerabilidad reportada"}`));
+                } else {
+                  const strong = document.createElement("strong");
+                  strong.textContent = cve.id;
+                  li.appendChild(strong);
+                  li.appendChild(document.createTextNode(`: ${cve.summary || "Vulnerabilidad reportada"}`));
+                }
                 cvesList.appendChild(li);
               });
               cvesList.classList.remove("hidden");
@@ -721,6 +741,9 @@
         }
       }
 
+      // Guardar elemento activo para retornar foco al cerrar (WCAG 2.4.3)
+      lastActiveElement = document.activeElement as HTMLElement | null;
+
       // Animación de apertura
       root.classList.remove("pointer-events-none", "opacity-0");
       root.setAttribute("aria-hidden", "false");
@@ -736,6 +759,10 @@
         root.classList.add("pointer-events-none");
         root.setAttribute("aria-hidden", "true");
         document.body.classList.remove("overflow-hidden");
+        // Retornar el foco al disparador original
+        if (lastActiveElement && typeof lastActiveElement.focus === "function") {
+          lastActiveElement.focus();
+        }
       }, 200);
     }
 
@@ -743,8 +770,37 @@
     backdrop.addEventListener("click", closeDrawer);
 
     window.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && root.getAttribute("aria-hidden") === "false") {
-        closeDrawer();
+      if (root.getAttribute("aria-hidden") === "false") {
+        if (e.key === "Escape") {
+          e.preventDefault();
+          closeDrawer();
+          return;
+        }
+
+        // Focus Trap para navegación accesible por teclado (WCAG 2.1.2)
+        if (e.key === "Tab") {
+          const focusable = panel.querySelectorAll<HTMLElement>(
+            'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+          );
+          const visible = Array.from(focusable).filter(
+            (el) => !el.closest(".hidden") && el.offsetParent !== null,
+          );
+          if (visible.length === 0) return;
+          const first = visible[0];
+          const last = visible[visible.length - 1];
+
+          if (e.shiftKey) {
+            if (document.activeElement === first) {
+              e.preventDefault();
+              last.focus();
+            }
+          } else {
+            if (document.activeElement === last) {
+              e.preventDefault();
+              first.focus();
+            }
+          }
+        }
       }
     });
 

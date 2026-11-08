@@ -44,6 +44,22 @@ def test_calculate_tier_a_healthy():
     assert label == "Blindaje Alto"
 
 
+def test_calculate_tier_c_low_scorecard():
+    tier, label = metrics.calculate_tier(
+        "oss", openssf_score=3.2, open_cves=0, days_since_last_release=10
+    )
+    assert tier == "tier-c"
+    assert label == "Atención Requerida"
+
+
+def test_calculate_tier_unknown_no_telemetry():
+    tier, label = metrics.calculate_tier(
+        "oss", openssf_score=None, open_cves=0, days_since_last_release=None
+    )
+    assert tier == "unknown"
+    assert label == "Sin telemetría"
+
+
 def test_calculate_tier_b_moderate():
     tier, label = metrics.calculate_tier(
         "oss", openssf_score=5.5, open_cves=0, days_since_last_release=30

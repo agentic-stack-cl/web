@@ -245,6 +245,10 @@ def calculate_tier(
     if open_cves > 0 or (days_since_last_release is not None and days_since_last_release > 180):
         return ("tier-c", "Atención Requerida")
 
+    # Si el Scorecard está reprobado (< 4.0), alerta atención requerida
+    if openssf_score is not None and openssf_score < 4.0:
+        return ("tier-c", "Atención Requerida")
+
     if (
         openssf_score is not None
         and openssf_score >= 7.0
@@ -252,11 +256,14 @@ def calculate_tier(
     ):
         return ("tier-a", "Blindaje Alto")
 
-    if openssf_score is not None and openssf_score >= 4.0:
+    if (openssf_score is not None and openssf_score >= 4.0) or (
+        days_since_last_release is not None and days_since_last_release <= 90
+    ):
         return ("tier-b", "Blindaje Medio")
 
-    if days_since_last_release is not None and days_since_last_release <= 90:
-        return ("tier-b", "Blindaje Medio")
+    # Si no hay telemetría suficiente disponible para calificar
+    if openssf_score is None and days_since_last_release is None:
+        return ("unknown", "Sin telemetría")
 
     return ("tier-b", "Blindaje Medio")
 
@@ -342,12 +349,22 @@ def collect_metrics(
         pypi_data = fetch_pypi_data(pypi_pkg) if pypi_pkg else {}
         ossf_data = fetch_openssf_scorecard(gh_repo) if gh_repo else {}
 
-        # CVEs en OSV
+        # CVEs en OSV (escaneo independiente para herramientas con distribución dual PyPI y npm)
         cves: list[dict[str, Any]] = []
         if pypi_pkg:
             cves.extend(fetch_osv_vulnerabilities(pypi_pkg, "PyPI"))
-        elif npm_pkg:
+        if npm_pkg:
             cves.extend(fetch_osv_vulnerabilities(npm_pkg, "npm"))
+
+        # Deduplicar por ID
+        seen_cve_ids: set[str] = set()
+        deduped_cves: list[dict[str, Any]] = []
+        for c in cves:
+            cid = c.get("id")
+            if cid and cid not in seen_cve_ids:
+                seen_cve_ids.add(cid)
+                deduped_cves.append(c)
+        cves = deduped_cves
 
         # Determinar descargas mensuales prioritarias
         downloads = npm_data.get("monthly_downloads") or pypi_data.get("monthly_downloads")
@@ -361,7 +378,7 @@ def collect_metrics(
             "stars": stars,
             "forks": forks,
             "monthly_downloads": downloads or prev.get("community", {}).get("monthly_downloads"),
-            "issues_closed_ratio": prev.get("community", {}).get("issues_closed_ratio", 0.85),
+            "issues_closed_ratio": prev.get("community", {}).get("issues_closed_ratio"),
             "history": history,
         }
 
@@ -388,7 +405,7 @@ def collect_metrics(
             "days_since_last_release": days_release,
             "releases_last_year": gh_data.get("releases_last_year")
             or prev.get("security", {}).get("releases_last_year"),
-            "active_maintainers_6m": prev.get("security", {}).get("active_maintainers_6m", 4),
+            "active_maintainers_6m": prev.get("security", {}).get("active_maintainers_6m"),
             "open_cves": len(cves),
             "cves_detail": cves,
             "license": {"spdx": spdx, "type": "permissive"},

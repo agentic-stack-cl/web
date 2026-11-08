@@ -648,7 +648,11 @@ const blipsStore = Object.fromEntries(
     })();
   </script>
 
-  <script id="radar-data-store" type="application/json" set:html={JSON.stringify(blipsStore)} />
+  <script
+    id="radar-data-store"
+    type="application/json"
+    set:html={JSON.stringify(blipsStore).replace(/<\/script/gi, "<\\/script")}
+  />
   <RadarDrawer />
 </BaseLayout>
 
