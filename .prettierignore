@@ -5,3 +5,5 @@ public/vendor/
 package-lock.json
 scripts/radar/fixtures/
 *.py
+AGENTS.md
+GEMINI.md

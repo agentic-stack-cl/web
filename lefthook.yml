@@ -7,6 +7,8 @@ pre-commit:
       glob: "*.{astro,ts,js,mjs,json,md,mdx,css,yml,yaml}"
       exclude:
         - "public/vendor/**"
+        - "AGENTS.md"
+        - "GEMINI.md"
       run: npx prettier --write --ignore-unknown {staged_files}
       stage_fixed: true
     eslint:
