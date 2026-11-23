@@ -24,7 +24,7 @@ jobs:
         with:
           node-version: 24
           cache: npm
-      - uses: astral-sh/setup-uv@v10.3.3 # no publica tag v10
+      - uses: astral-sh/setup-uv@v10.4.0 # no publica tag v10
       - run: npm ci
       - name: Validar radar.json
         run: npm run radar:validate
